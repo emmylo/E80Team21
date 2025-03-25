@@ -79,6 +79,8 @@ String SensorIMU::printRollPitchHeading(void) {
   printString += " heading: ";
   printString += String(state.heading);
   printString += "[deg]";
+  printString += "X-mag Value: ";                //E80 lab 7 change
+  printString += String(state.magX);
   return printString; 
 }
 
