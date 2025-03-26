@@ -34,7 +34,7 @@ void XYStateEstimator::updateState(imu_state_t * imu_state_p, gps_state_t * gps_
     state.y = RADIUS_OF_EARTH_M * dLatRad;
 
     // Convert IMY heading - CW from North to yaw - CCW from East 
-    float headingRad = imu_state_p -> heasing * (PI/180);
+    float headingRad = imu_state_p -> heading * (PI/180); // Convert to radians 
     float offset = PI/2; // Rotating 90 deg from north to east 
     state.yaw = angleDiff(offset - headingRad) // Flip sign for CW to CCw 
     
