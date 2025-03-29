@@ -23,20 +23,20 @@ void XYStateEstimator::updateState(imu_state_t * imu_state_p, gps_state_t * gps_
   if (gps_state_p->num_sat >= N_SATS_THRESHOLD){
     gpsAcquired = 1;
 
-    // Convert latitude and longitude length to m 
-    float dLat = gps_state_p -> lat - orgin_lat;   //Degrees 
-    float dLon = gps_state_p -> lon - orgin_lon;
-    //Radians 
-    float dLatRad = dLat * (PT/180);
-    float dLonRad = dLon * (PT/180);
-    //Equirectangular Projection 
-    state.x = RADIUS_OF_EARTH_M*cos(orgin_lat * (PI/180)) * dLonRad; //East 
-    state.y = RADIUS_OF_EARTH_M * dLatRad;
+    float cosOrigLat = cos(origin_lat*PI/180.0);
 
-    // Convert IMY heading - CW from North to yaw - CCW from East 
-    float headingRad = imu_state_p -> heading * (PI/180); // Convert to radians 
-    float offset = PI/2; // Rotating 90 deg from north to east 
-    state.yaw = angleDiff(offset - headingRad) // Flip sign for CW to CCw 
+    state.x = (gps_state_p->lon-origin_lon)*PI/180.0*RADIUS_OF_EARTH_M*cosOrigLat;
+
+    state.y = (gps_state_p->lat-origin_lat)*PI/180.0*RADIUS_OF_EARTH_M;
+
+
+    // get yaw
+
+    float heading_rad = imu_state_p->heading*PI/180.0; // convert to radians
+
+    float yaw_rad = -heading_rad + PI/2.0; // adjust from 0=North, CWW=(+) to 0=East, CCW=(+)
+
+    state.yaw = angleDiff(yaw_rad);
     
     
 
