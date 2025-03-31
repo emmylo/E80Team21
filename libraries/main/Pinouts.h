@@ -41,4 +41,13 @@
 // Depth Control
 #define PRESSURE_PIN 14 // Teensy pin A00
 
+// Anemometer
+#define ANEMOMETER_PIN 15
+
+// Weather Vane
+#define VANE_PIN 11
+
+// Thermistor
+#define THERMISTOR_PIN 16
+
 #endif

@@ -29,6 +29,10 @@ Authors:
 #include <GPSLockLED.h>
 #include <BurstADCSampler.h>
 
+//EDITS
+#include <anemometer.h>
+#include <MLX90316.h>
+
 /////////////////////////* Global Variables *////////////////////////
 
 MotorDriver motor_driver;
@@ -44,6 +48,8 @@ Logger logger;
 Printer printer;
 GPSLockLED led;
 BurstADCSampler burst_adc;
+
+//
 
 // loop start recorder
 int loopStartTime;
