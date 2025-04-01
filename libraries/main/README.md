@@ -60,11 +60,17 @@ This class controls an LED on the motherboard that blinks with a duty cycle prop
 The 'Logger' class handles all the logging. It is written in a way to hide away the intricacies of logging the heterogenous set of variables a user may want to log.
 In the main program's setup function, the 'Logger' object's 'include' function is run, passing pointers to any 'DataSource' objects that should be logged.
 Next, the 'Logger' object's 'init' function is run, which automatically finds an unused filename. Each log creates two files, 'INFXXX.txt' and 'LOGXXX.bin', where the 'XXX' is the smallest number for which a file with the same name doesn't already exist on the SD card.
+
+IMPORTANT STEP: use 'include' function to point to desired 'DataSource' objects (sensor outputs)
+
+
 The 'INF' file describes the schema of the data being logged. Its first line contains comma separated column names, and its second line contains comma separated column data types. The 'LOG' file contains the raw binary values of each variable being logged, with each row of data written in the order described by the 'INF' file.
 The logging actually happens through two functions: 'log' and 'write';
 The 'log' function samples all the 'DataSource' objects that were registered to the 'Logger' during setup by the 'include' function. It calls the 'writeDataBytes' function of each 'DataSource', to write the binary values of the variables to be logged to a buffer.  This buffer is composed of 16 blocks stored in the "blocks" variable--on the Teensy, not the SD.  Internally, the 'Logger' object keeps track of which of these blocks have been logged and which have been written to the sd. The 'log' function grabs a blank block and writes the data to it.  This transition is done no matter how full the previous block was, typically adding about 120 bytes of buffer into each log.  This blank space stops any strange writing hiccups from throwing off later data values.
 ** Note: the 'log' function does NOT actually write anything to the SD card. The fact that this function only writes to a buffer means it takes less than a ms typically. **
 ** Note: the 'log' function does decide what data is recorded.  If it is called more often than data is updated, data will appear duplicated on the SD card.  If it is called less often, measured data will be lost.  'write' has no effect on what data is kept, unless it is called so infrequently that the buffer blocks overflow. **
+
+
 The actual writing to the SD card is handled by the 'write' function. This function loops as long as there is space in the LOG file on the SD card available to write. To add space, increase the FILE_BLOCK_COUNT variable.  Upon each loop, it checks if there are any newly logged blocks to write to the SD card.  With the standard times, there should be 4 blocks logged, which are then transferred over to the SD card.
 ** Note: logger.write() is the longest function in the main loop by a factor of ~8.  It takes around 23 ms in my experience -- but verify that for your teensy and data if you're concerned about it.  Take this time into account when deciding how to offset calls in the main loop. **
 ** Note: The current logging infrastructure is not designed to log long series of ADC values all at once (for example if an ADC were setup to sample continuously for a period of time). If this functionality is absolutely necessary, prepare to do some restructuring of the logger class.

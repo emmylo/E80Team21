@@ -30,7 +30,7 @@ Authors:
 #include <BurstADCSampler.h>
 
 //EDITS
-#include <anemometer.h>
+#include <ThermistorSampler.h>
 #include <MLX90316.h>
 
 /////////////////////////* Global Variables *////////////////////////
@@ -48,6 +48,9 @@ Logger logger;
 Printer printer;
 GPSLockLED led;
 BurstADCSampler burst_adc;
+
+//EDIT
+ThermistorSampler thermistor_sampler;
 
 //
 
@@ -74,10 +77,12 @@ void setup() {
   logger.include(&adc);
   logger.include(&ef);
   logger.include(&button_sampler);
+  // Is this inclusion and initialization correct?, will need to do for other sensors
+  logger.include(&thermistor_sampler);
+  thermistor_sampler.init()
+
   logger.init();
   burst_adc.init();
-  
-
   printer.init();
   ef.init();
   button_sampler.init();
@@ -91,6 +96,7 @@ void setup() {
   
   state_estimator.init(); 
 
+  // HAVE TO ADD SENSORS TO SCHEDULING LOOP
   printer.printMessage("Starting main loop",10);
   loopStartTime = millis();
   printer.lastExecutionTime         = loopStartTime - LOOP_PERIOD + PRINTER_LOOP_OFFSET ;

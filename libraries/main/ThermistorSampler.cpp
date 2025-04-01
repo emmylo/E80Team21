@@ -4,7 +4,7 @@
 extern Printer printer;
 
 ThermistorSampler::ThermistorSampler(void) 
-  : DataSource("Button","bool") // from DataSource  HELP??
+  : DataSource("Thermistor","double") // from DataSource is thermistor the right name? double?
 {}
 
 
@@ -21,7 +21,7 @@ void ThermistorSampler::updateState(void)
 {
   // when the voltage at USER_BUTTON is low, the button 
   // has been pressed, thus buttonState is set to high
-  buttonState = !digitalRead(USER_BUTTON);
+  thermistorState = !analogRead(USER_BUTTON); //changed from digital to analog?
 }
 
 
@@ -29,13 +29,13 @@ String ThermistorSampler::printState(void)
 // This function returns a string that the Printer class 
 // can print to the serial monitor if desired
 {
-  return "Button: " + String(buttonState);
+  return "Thermistor Temperature: " + String(thermistorState);
 }
 
 size_t ThermistorSampler::writeDataBytes(unsigned char * buffer, size_t idx)
 // This function writes data to the micro SD card
 {
-  bool * data_slot = (bool *) &buffer[idx];
-  data_slot[0] = buttonState;
-  return idx + sizeof(bool);
+  double * data_slot = (double *) &buffer[idx];
+  data_slot[0] = thermistorState;
+  return idx + sizeof(double); //double or bool?
 }
