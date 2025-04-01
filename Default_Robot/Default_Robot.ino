@@ -30,7 +30,7 @@ Authors:
 #include <BurstADCSampler.h>
 
 //EDITS
-#include <ThermistorSampler.h>
+#include <MLX90316.h>
 
 /////////////////////////* Global Variables *////////////////////////
 
@@ -48,8 +48,6 @@ Printer printer;
 GPSLockLED led;
 BurstADCSampler burst_adc;
 
-//EDIT
-ThermistorSampler thermistor_sampler;
 
 //
 
@@ -59,8 +57,8 @@ int currentTime;
 int current_way_point = 0;
 volatile bool EF_States[NUM_FLAGS] = {1,1,1};
 
-// GPS Waypoints
-const int number_of_waypoints = 2;
+// GPS Waypoints NEED TO STORE STARTING POSITION FOR GPS RETURN
+const int number_of_waypoints = 2; 
 const int waypoint_dimensions = 2;       // waypoints are set to have two pieces of information, x then y.
 double waypoints [] = { 0, 10, 0, 0 };   // listed as x0,y0,x1,y1, ... etc.
 
@@ -76,9 +74,7 @@ void setup() {
   logger.include(&adc);
   logger.include(&ef);
   logger.include(&button_sampler);
-  // Is this inclusion and initialization correct?, will need to do for other sensors
-  logger.include(&thermistor_sampler);
-  thermistor_sampler.init()
+ 
 
   logger.init();
   burst_adc.init();
