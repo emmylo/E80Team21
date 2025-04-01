@@ -31,7 +31,6 @@ Authors:
 
 //EDITS
 #include <ThermistorSampler.h>
-#include <MLX90316.h>
 
 /////////////////////////* Global Variables *////////////////////////
 
@@ -96,7 +95,7 @@ void setup() {
   
   state_estimator.init(); 
 
-  // HAVE TO ADD SENSORS TO SCHEDULING LOOP
+  // HAVE TO ADD SENSORS TO SCHEDULING LOOP?
   printer.printMessage("Starting main loop",10);
   loopStartTime = millis();
   printer.lastExecutionTime         = loopStartTime - LOOP_PERIOD + PRINTER_LOOP_OFFSET ;
