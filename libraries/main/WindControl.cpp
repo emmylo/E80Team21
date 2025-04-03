@@ -1,5 +1,6 @@
 #include "WindControl.h"
 #include "Printer.h"
+
 extern Printer printer;
 
 inline float angleDiff(float a) {
@@ -13,40 +14,86 @@ WindControl::WindControl(void)
 
 
 void WindControl::init(const int totalWayPoints_in, double * wayPoints_in, int navigateDelay_in) {
+  // GPS initialize
+  
   totalWayPoints = totalWayPoints_in;
   // create wayPoints array on the Heap so that it isn't erased once the main Arduino loop starts
   wayPoints = new double[totalWayPoints];
   for (int i=0; i<totalWayPoints; i++) { 
     wayPoints[i] = wayPoints_in[i];
   }
+
   navigateDelay = navigateDelay_in;
   if (totalWayPoints == 0) atPoint = 1; // not doing surface control
   else atPoint = 0; // doing surface control
+
+  // Vane initialize
+// Initializes the SPI bus by setting SCK, MOSI, and SS to outputs, pulling SCK and MOSI low, and SS high.
+  mlx_1.attach(pin_SS,pinSCLK, pinMOSI );
 }
 
-int WindControl::getWayPoint(int dim) {
+int SurfaceControl::getWayPoint(int dim) {
   return wayPoints[currentWayPoint*stateDims+dim];
 }
 
 void WindControl::navigate(xy_state_t * state, gps_state_t * gps_state_p, int currentTime_in) {
-  currentTime = currentTime_in;
+  
+  if (navMode == 0){ // GPS MODE
+    currentTime = currentTime_in;
 
-  if (gps_state_p->num_sat >= N_SATS_THRESHOLD) {
-    gpsAcquired = 1;
-
-    updatePoint(state->x, state->y);
-    if (currentWayPoint == totalWayPoints) return; // stops motors at final surface point
-    
-    if (atPoint || delayed) {
-      uL = 0; 
-      uR = 0;
-      return; // stops motors at surface waypoint
+    if (gps_state_p->num_sat >= N_SATS_THRESHOLD) {
+      gpsAcquired = 1;
+  
+      updatePoint(state->x, state->y);
+      if (currentWayPoint == totalWayPoints) return; // stops motors at final surface point
+      
+      if (atPoint || delayed) {
+        uL = 0; 
+        uR = 0;
+        return; // stops motors at surface waypoint
+      }
+  
+      // set up variables
+      int x_des = getWayPoint(0);
+      int y_des = getWayPoint(1);
+  
+      // Set the values of yaw_des, yaw, yaw_error, control effort (u), uL, and uR appropriately for P control
+      // You can use trig functions (atan2 might be useful)
+      // You can access the x and y coordinates calculated in XYStateEstimator.cpp using state->x and state->y respectively
+      // You can access the yaw calculated in XYStateEstimator.cpp using state->yaw
+  
+      ///////////////////////////////////////////////////////////
+      // INSERT P CONTROL CODE HERE
+      float yaw_des = atan2(y_des - y, x_des - x);
+      float yaw_error = yaw_des - yaw;
+      float u = Kp*yaw_error;
+      float uR = avgPower + u;
+      float uL = avgPower - u;
+      ///////////////////////////////////////////////////////////
+      
+      int yaw_des = atan2(y_des - y, x_des - x)
+      
+    }
+    else {
+      gpsAcquired = 0;
     }
 
-    // set up variables
-    int x_des = getWayPoint(0);
-    int y_des = getWayPoint(1);
+  }
+  
+  else{
+  
+  if (mlxMetro.check() == 1) {
+    ii = mlx_1.readAngle();
+    angle = ii/10; //readAngle gives 10 * degrees, thus 3600 = is 360.0º
 
+    // only if using heading = state->heading;
+    /* if ii = -1 then no SPI signal
+     * if ii = -2 then signal too strong
+     * if ii = -3 then signal too weak
+     * "angle" will read 0 if signal is lost
+    */  
+    
+ 
     // Set the values of yaw_des, yaw, yaw_error, control effort (u), uL, and uR appropriately for P control
     // You can use trig functions (atan2 might be useful)
     // You can access the x and y coordinates calculated in XYStateEstimator.cpp using state->x and state->y respectively
@@ -54,20 +101,19 @@ void WindControl::navigate(xy_state_t * state, gps_state_t * gps_state_p, int cu
 
     ///////////////////////////////////////////////////////////
     // INSERT P CONTROL CODE HERE
-    float yaw_des = atan2(y_des - y, x_des - x);
-    float yaw_error = yaw_des - yaw;
-    float u = Kp*yaw_error;
-    float uR = avgPower + u;
-    float uL = avgPower - u;
+    yaw_des = angle*180/PI; 
+    yaw_error = yaw_des - yaw;
+    u = Kp*yaw_error;
+    uR = avgPower + u;
+    uL = avgPower - u;
     ///////////////////////////////////////////////////////////
     
-    int yaw_des = atan2(y_des - y, x_des - x)
     
   }
-  else {
-    gpsAcquired = 0;
-  }
+ 
 
+
+}
 }
 
 String WindControl::printString(void) {

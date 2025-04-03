@@ -6,6 +6,9 @@
 #include <Arduino.h>
 #include "MotorDriver.h"
 #include "XYStateEstimator.h"
+#include "Metro.h"
+#include "MLX90316.h"
+
 extern MotorDriver motorDriver;
 
 class WindControl : public DataSource
@@ -44,9 +47,18 @@ public:
   bool navigateState = 1;
   bool atPoint;
   bool complete = 0;
+  bool navMode; // 0 is GPS, 1 is wind
 
-  int totalWayPoints;
-  double * wayPoints;
+  int pin_SS = 10; 
+  int pinSCLK = 13; 
+  int pinMOSI = 11; 
+  int ii;
+  int angle;
+  String direction;
+  Metro mlxMetro = Metro(5);
+  MLX90316 mlx_1  = MLX90316();
+
+
 
 private:
 

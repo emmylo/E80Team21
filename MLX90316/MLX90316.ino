@@ -24,7 +24,7 @@ void loop() {
   
   if (mlxMetro.check() == 1) {
     ii = mlx_1.readAngle();
-    angle = ii/1; //readAngle gives 10 * degrees, thus 3600 = is 360.0º
+    angle = ii/10; //readAngle gives 10 * degrees, thus 3600 = is 360.0º
     /* if ii = -1 then no SPI signal
      * if ii = -2 then signal too strong
      * if ii = -3 then signal too weak
