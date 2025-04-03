@@ -40,15 +40,11 @@ void XYStateEstimator::updateState(imu_state_t * imu_state_p, gps_state_t * gps_
     
     
 
-    // set the values of state.x, state.y, and state.yaw
+    // set the values of state.x, state.y, and state.yaw (above)
     // It can make use of the constants RADIUS_OF_EARTH, origin_lat, origin_lon (see XYStateEstimator.h)
     // You can access the current GPS latitude and longitude readings with gps_state_p->lat and gps_state_p->lon
     // You can access the current imu heading with imu_state_p->heading
     // Also note that math.h is already included so you have access to trig functions [rad]
-
-    ///////////////////////////////////////////////////////////////////
-    // INSERT YAW, X and Y CALCULATION HERE
-    //////////////////////////////////////////////////////////////////
 
   }
   else{
