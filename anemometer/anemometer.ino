@@ -14,6 +14,8 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(hallSensor), ISR, FALLING);
 }
 
+float loopDuration = 0.099;
+
 void loop() {
   //Nothing here
 }
@@ -25,3 +27,17 @@ void ISR(){
   Serial.println(revolution);
   }
 
+noInterrupts(); // prevent ISR from modifying while reading
+  int revs = revolution;
+  revolution = 0; // reset for next loop
+  interrupts();
+
+  float rps = revs / loopDuration;
+
+  Serial.print("Revolutions: ");
+  Serial.println(revs);
+  Serial.print("RPS: ");
+  Serial.println(rps);
+
+  delay(3000); // wait 3 seconds if that's your loop rate
+}
