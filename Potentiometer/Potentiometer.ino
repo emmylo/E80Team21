@@ -2,8 +2,7 @@
 #include "PotentiometerVane.h"
 
 
-
-int main() {
+void loop() {
 
     // get R1 into range
     while (R1 >= 6000 || R1 <= 4000) {

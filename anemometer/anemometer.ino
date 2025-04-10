@@ -4,8 +4,11 @@
 //and provide list of possible interrupt routines.
 #include <avr/interrupt.h>
 
-int hallSensor = 17; //connect hall effect sensor output to pin 17 or pin corresponding to A3
+int hallSensor = 15; //connect hall effect sensor output to pin 17 or pin corresponding to A3
 int revolution = 0; //initialize revolution count
+
+float loopDuration = 0.099;
+float rps = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -14,10 +17,9 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(hallSensor), ISR, FALLING);
 }
 
-float loopDuration = 0.099;
-
 void loop() {
-  //Nothing here
+
+  
 }
 
 //ISR function: increments revolution count and prints to serial monitor
@@ -25,19 +27,6 @@ void ISR(){
   revolution += 1;
   Serial.print("Revolution count: ");
   Serial.println(revolution);
+
   }
 
-noInterrupts(); // prevent ISR from modifying while reading
-  int revs = revolution;
-  revolution = 0; // reset for next loop
-  interrupts();
-
-  float rps = revs / loopDuration;
-
-  Serial.print("Revolutions: ");
-  Serial.println(revs);
-  Serial.print("RPS: ");
-  Serial.println(rps);
-
-  delay(3000); // wait 3 seconds if that's your loop rate
-}

@@ -25,15 +25,17 @@ Authors:
 #include <MotorDriver.h>
 #include <Logger.h>
 #include <Printer.h>
-#include <SurfaceControl.h>
+//#include <SurfaceControl.h>
 #define UartSerial Serial1
 #include <GPSLockLED.h>
+
+#include <MainNavigation.h>
 
 /////////////////////////* Global Variables *////////////////////////
 
 MotorDriver motor_driver;
 XYStateEstimator xy_state_estimator;
-SurfaceControl surface_control;
+//SurfaceControl surface_control; //may need to remove
 SensorGPS gps;
 Adafruit_GPS GPS(&UartSerial);
 ADCSampler adc;
@@ -43,11 +45,15 @@ SensorIMU imu;
 Logger logger;
 Printer printer;
 GPSLockLED led;
+MainNavigation main_navigation;
 
 // loop start recorder
 int loopStartTime;
 int currentTime;
 volatile bool EF_States[NUM_FLAGS] = {1,1,1};
+
+int windNavigationDuration = 60000;
+
 
 ////////////////////////* Setup *////////////////////////////////
 
@@ -56,7 +62,8 @@ void setup() {
   logger.include(&imu);
   logger.include(&gps);
   logger.include(&xy_state_estimator);
-  logger.include(&surface_control);
+  //logger.include(&surface_control); //maybe take this out?
+  logger.include(&main_navigation);
   logger.include(&motor_driver);
   logger.include(&adc);
   logger.include(&ef);
@@ -72,11 +79,13 @@ void setup() {
   motor_driver.init();
   led.init();
 
-  int navigateDelay = 0; // how long robot will stay at surface waypoint before continuing (ms)
+  int navigateDelay = 5000; // how long robot will stay at surface waypoint before continuing (ms)
 
-  const int num_surface_waypoints = 3; // Set to 0 if only doing depth control
-  double surface_waypoints [] = { 125, -40, 150, -40, 125, -40 };   // listed as x0,y0,x1,y1, ... etc.
-  surface_control.init(num_surface_waypoints, surface_waypoints, navigateDelay);
+  const int num_surface_waypoints = 2; // Number of ordered pairs of surface waypoints. (e.g., if surface_waypoints is {x0,y0,x1,y1} then num_surface_waypoints is 2.) Set to 0 if only doing depth control  
+  double surface_waypoints [] = {  10, 0, 0, 0};   // listed as x0,y0,x1,y1, ... etc.
+  //surface_control.init(num_surface_waypoints, surface_waypoints, navigateDelay); //CHANGE
+  main_navigation.init(num_surface_waypoints, surface_waypoints, navigateDelay); //CHANGE
+
   
   xy_state_estimator.init(); 
 
@@ -88,11 +97,11 @@ void setup() {
   ef.lastExecutionTime                 = loopStartTime - LOOP_PERIOD + ERROR_FLAG_LOOP_OFFSET;
   button_sampler.lastExecutionTime     = loopStartTime - LOOP_PERIOD + BUTTON_LOOP_OFFSET;
   xy_state_estimator.lastExecutionTime = loopStartTime - LOOP_PERIOD + XY_STATE_ESTIMATOR_LOOP_OFFSET;
-  surface_control.lastExecutionTime    = loopStartTime - LOOP_PERIOD + SURFACE_CONTROL_LOOP_OFFSET;
+  //surface_control.lastExecutionTime    = loopStartTime - LOOP_PERIOD + SURFACE_CONTROL_LOOP_OFFSET; 
+  main_navigation.lastExecutionTime    = loopStartTime - LOOP_PERIOD + MAIN_NAVIGATION_LOOP_OFFSET; // CHANGE 
   logger.lastExecutionTime             = loopStartTime - LOOP_PERIOD + LOGGER_LOOP_OFFSET;
 
 }
-
 
 
 //////////////////////////////* Loop */////////////////////////
@@ -107,8 +116,12 @@ void loop() {
     printer.printValue(2,logger.printState());
     printer.printValue(3,gps.printState());   
     printer.printValue(4,xy_state_estimator.printState());  
-    printer.printValue(5,surface_control.printWaypointUpdate());
-    printer.printValue(6,surface_control.printString());
+   // printer.printValue(5,surface_control.printWaypointUpdate());
+    printer.printValue(5,main_navigation.printWaypointUpdate());
+
+   // printer.printValue(6,surface_control.printString());
+    printer.printValue(6,main_navigation.printString());
+
     printer.printValue(7,motor_driver.printState());
     printer.printValue(8,imu.printRollPitchHeading());        
     printer.printValue(9,imu.printAccels());
@@ -116,21 +129,43 @@ void loop() {
   }
 
   /// SURFACE CONTROL FINITE STATE MACHINE///
-  if ( currentTime-surface_control.lastExecutionTime > LOOP_PERIOD ) {
-    surface_control.lastExecutionTime = currentTime;
-    if ( surface_control.navigateState ) { // NAVIGATE STATE //
-      if ( !surface_control.atPoint ) { 
-        surface_control.navigate(&xy_state_estimator.state, &gps.state, currentTime);
+  if ( currentTime-main_navigation.lastExecutionTime > LOOP_PERIOD ) { //what does this line do?
+    main_navigation.lastExecutionTime = currentTime;
+    
+    if (main_navigation.navMode == 0){
+    if ( main_navigation.navigateState ) { // NAVIGATE STATE //
+      if ( !main_navigation.atPoint ) { 
+        main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
       }
-      else if ( surface_control.complete ) { 
-        delete[] surface_control.wayPoints; // destroy surface waypoint array from the Heap
+      else if ( main_navigation.complete ) { 
+        delete[] main_navigation.wayPoints; // destroy surface waypoint array from the Heap
+        main_navigation.navMode = 1; //changed
       }
       else {
-        surface_control.atPoint = false;   // get ready to go to the next point
+        main_navigation.atPoint = false;   // get ready to go to the next point
       }
-      motor_driver.drive(surface_control.uL,surface_control.uR,0);
+      motor_driver.drive(main_navigation.uL,main_navigation.uR,0);
     }
   }
+
+    else{ 
+      int windNavigationStart = currentTime; //how does the looping work
+      int windNavigationEnd = windNavigationStart + windNavigationDuration;
+
+
+      if (currentTime <= windNavigationEnd ){
+        main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
+        motor_driver.drive(main_navigation.uL,main_navigation.uR,10); //make sure 10 is enough
+        
+      }
+
+      else{
+        main_navigation.navMode = 0;
+      }
+
+  }
+  }
+
   
   if ( currentTime-adc.lastExecutionTime > LOOP_PERIOD ) {
     adc.lastExecutionTime = currentTime;
