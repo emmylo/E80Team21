@@ -69,7 +69,7 @@ for i = 1:length(samples)-1
     for j = samples(i):samples(i+1)
         curr = A01(j);
     if(and(prev > low, curr < low))
-        revs = revs + 1;
+        revs = revs + 1
     end
     prev = curr;
     end
@@ -98,44 +98,42 @@ teensyunit = 0.003237; % one teensy unit to volts
 Vteensy = teensyunit.*A02; % PROBABLY CHANGE THIS PLEASE DON'T FORGET
 
 Vdivider = -Rn1/Rf*(Vteensy - (1+Rf/Rn1)* (Rg/(Rp1+Rg)*Vin)); %back out to get Vout from voltage divider
-R1 = R2*(Vin./Vdivider - 1); % back out to get resistance 
+R1 = R2*(Vin/Vdivider - 1); % back out to get resistance 
 
 for i = 1:length(R1)
 while (R1(i) >= 6000 || R1(i) <= 4000)
-        if (R1(i) >= 6000) 
-            R1(i) = R1(i) - 1000  % Decrease R1 by 1000 if it's greater than 6000
+        if (R1(i) > 6000) 
+            R1(i) = R(i) - 1000;  % Decrease R1 by 1000 if it's greater than 6000
         else
-            R1(i) = R1(i) + 1000  % Increase R1 by 1000 if it's less than 4000
+            R(i) = R(i) + 1000;  % Increase R1 by 1000 if it's less than 4000
         end
 end
 end
        
 for j = 1:length(R1)
 if(R1(j)>=5000)
-    R1(j) = R1(j) - 5000
+    R1(j) = R1(j) - 5000;
     
   
 else
-    R1(j) = R1(j) - 4000
+    R1(j) = R1(j) - 4000;
    
 end
 end
     angle = R1/1000;
     angle = 360 - angle*360; % degrees
-    angle = angle*pi()/180; % radians
+    angle = angle*PI/180; % radians
 
 figure(2)
-plot(angle)
+plot(angle);
 xlabel('Sample Number')
 ylabel('Angle (degrees)')
 title('Weather Vane')
 
 %% PROCESS THERMISTOR DATA
 
-Vthermistor = A02; %% MAKE SURE CORRECT PIN
+Vthermistor = A02;
 
-temps = Vthermistor*-37.1 + 109;
+
 figure(3)
-plot(temps)
-xlabel('Sample Number')
-ylabel('Temperature (degrees Celsius)')
+plo
