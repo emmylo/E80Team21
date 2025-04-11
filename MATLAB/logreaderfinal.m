@@ -4,7 +4,7 @@
 clear;
 %clf;
 
-filenum = '026'; % file number for the data you want to read
+filenum = '035'; % file number for the data you want to read
 infofile = strcat('INF', filenum, '.TXT');
 datafile = strcat('LOG', filenum, '.BIN');
 
@@ -63,7 +63,7 @@ rps = zeros(1,length(samples));
 prev = 100;
 curr = A01(1);
 revs = 0;
-totalRev = 0;
+totalRevs = 0;
 
 for i = 1:length(samples)-1
     for j = samples(i):samples(i+1)
@@ -73,6 +73,7 @@ for i = 1:length(samples)-1
     end
     prev = curr;
     end
+    totalRevs = revs + totalRevs;
     rps(i) = revs/period/10;
 
     revs = 0;
@@ -84,10 +85,12 @@ figure(1)
 plot(smoothrps)
 xlabel('Sample Number')
 ylabel('rps')
+title('Anemometer')
 
 
 
 %% PROCESS WIND VANE DATA
+A02prime = double(A02);
 Vin = 5;
 Rf = 11000;
 Rn1 = 6000;
@@ -95,47 +98,75 @@ Rg = 48000;
 Rp1 = 50000;
 R2 = 5000;
 teensyunit = 0.003237; % one teensy unit to volts
-Vteensy = teensyunit.*A02; % PROBABLY CHANGE THIS PLEASE DON'T FORGET
+Vteensy = A02prime.*0.003237; % PROBABLY CHANGE THIS PLEASE DON'T FORGET
+%Vteensy = linspace(0.3,3.3,100); % test vector
 
-Vdivider = -Rn1/Rf*(Vteensy - (1+Rf/Rn1)* (Rg/(Rp1+Rg)*Vin)); %back out to get Vout from voltage divider
+Vdivider = -Rn1/Rf*(Vteensy - (1+Rf/Rn1)*(Rg/(Rp1+Rg)*Vin)); %back out to get Vout from voltage divider
 R1 = R2*(Vin./Vdivider - 1); % back out to get resistance 
 
 for i = 1:length(R1)
 while (R1(i) >= 6000 || R1(i) <= 4000)
         if (R1(i) >= 6000) 
-            R1(i) = R1(i) - 1000  % Decrease R1 by 1000 if it's greater than 6000
+            R1(i) = R1(i) - 1000; % Decrease R1 by 1000 if it's greater than 6000
         else
-            R1(i) = R1(i) + 1000  % Increase R1 by 1000 if it's less than 4000
+            R1(i) = R1(i) + 1000;  % Increase R1 by 1000 if it's less than 4000
         end
 end
 end
+
        
 for j = 1:length(R1)
 if(R1(j)>=5000)
-    R1(j) = R1(j) - 5000
-    
+    R1(j) = R1(j) - 5000;
   
 else
-    R1(j) = R1(j) - 4000
+    R1(j) = R1(j) - 4000;
    
 end
 end
-    angle = R1/1000;
-    angle = 360 - angle*360; % degrees
-    angle = angle*pi()/180; % radians
+
+angle = R1./1000;
+angledeg = 360-angle*360; % degrees
+anglerad = angle*pi()/180; % radians
 
 figure(2)
-plot(angle)
+plot(angledeg)
 xlabel('Sample Number')
 ylabel('Angle (degrees)')
 title('Weather Vane')
 
+yl = ylim;
+xl = xlim;
+xBox = [xl(1), xl(2), xl(2), xl(1)];
+directions = ['North', 'East', 'South', 'West'];
+colors = ['y', 'g', 'b'];
+
+lowEdge = 67.5;
+highEdge = lowEdge+45;
+
+for i = 1:3
+    yBox = [lowEdge lowEdge highEdge highEdge];
+    patch(xBox, yBox, 'black', 'FaceColor', colors(i),'FaceAlpha', 0.1);
+    lowEdge = lowEdge + 90;
+    highEdge = highEdge + 90;
+end
+
+yBoxNlo = [0 0 22.5 22.5];
+yBoxNhi = [337.5 337.5 360 360];
+patch(xBox, yBoxNlo, 'black', 'FaceColor', 'red','FaceAlpha', 0.1)
+patch(xBox, yBoxNhi, 'black', 'FaceColor', 'red','FaceAlpha', 0.1)
+legend('Vane Direction','East','South', 'West', 'North')
+
+hold off;
+
 %% PROCESS THERMISTOR DATA
 
-Vthermistor = A02; %% MAKE SURE CORRECT PIN
-
-temps = Vthermistor*-37.1 + 109;
+A03prime = double(A03)
+Vthermistor = teensyunit.*A03prime; %% MAKE SURE CORRECT PIN
+%Vthermistor = linspace(0.3,3.3,100); % test vector
+temps = Vthermistor.*-37.1 + 109;
 figure(3)
 plot(temps)
 xlabel('Sample Number')
 ylabel('Temperature (degrees Celsius)')
+title(['Thermistor'])
