@@ -1,4 +1,3 @@
-# Libraries
 ## Custom E80 Libraries
 This repository includes the library files for E80.
 
