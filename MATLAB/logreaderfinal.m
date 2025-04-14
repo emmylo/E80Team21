@@ -4,7 +4,7 @@
 clear;
 %clf;
 
-filenum = '035'; % file number for the data you want to read
+filenum = '036'; % file number for the data you want to read
 infofile = strcat('INF', filenum, '.TXT');
 datafile = strcat('LOG', filenum, '.BIN');
 
@@ -53,10 +53,11 @@ fclose(fid);
 
 % voltages should be either 0 or around 1023, using 10 to be safe
 low = 10;
+A01prime = double(A01);
 
 % number of seconds to take moving average over (times 10)
 period = 10;
-samples = 1:period:length(A01);
+samples = 1:period:length(A01prime);
 rps = zeros(1,length(samples));
 
 % keeping track of what came before and what we're on now
@@ -64,6 +65,7 @@ prev = 100;
 curr = A01(1);
 revs = 0;
 totalRevs = 0;
+sampleTime = 700:800;
 
 for i = 1:length(samples)-1
     for j = samples(i):samples(i+1)
@@ -74,18 +76,21 @@ for i = 1:length(samples)-1
     prev = curr;
     end
     totalRevs = revs + totalRevs;
-    rps(i) = revs/period/10;
+    rps(i) = revs/period*10;
 
     revs = 0;
 end
 
 % awesome function that turns somethings like [1 2 3] into [ 1 1 2 2 3 3]
 smoothrps = repelem(rps, period);
+averagerps = totalRevs/length(sampleTime)*10;
+windspeed = rps*10.1-5.14;
 figure(1)
-plot(smoothrps)
+plot(windspeed)
 xlabel('Sample Number')
-ylabel('rps')
+ylabel('Wind Speed (mph)')
 title('Anemometer')
+
 
 
 
@@ -136,6 +141,7 @@ ylabel('Angle (degrees)')
 title('Weather Vane')
 
 yl = ylim;
+ylim([0 360]);
 xl = xlim;
 xBox = [xl(1), xl(2), xl(2), xl(1)];
 directions = ['North', 'East', 'South', 'West'];
@@ -146,22 +152,22 @@ highEdge = lowEdge+45;
 
 for i = 1:3
     yBox = [lowEdge lowEdge highEdge highEdge];
-    patch(xBox, yBox, 'black', 'FaceColor', colors(i),'FaceAlpha', 0.1);
+    patch(xBox, yBox, colors(i), 'FaceColor', colors(i),'FaceAlpha', 0.1,'EdgeColor', 'none');
     lowEdge = lowEdge + 90;
     highEdge = highEdge + 90;
 end
 
 yBoxNlo = [0 0 22.5 22.5];
 yBoxNhi = [337.5 337.5 360 360];
-patch(xBox, yBoxNlo, 'black', 'FaceColor', 'red','FaceAlpha', 0.1)
-patch(xBox, yBoxNhi, 'black', 'FaceColor', 'red','FaceAlpha', 0.1)
+patch(xBox, yBoxNlo, 'black', 'FaceColor', 'red','FaceAlpha', 0.1,'EdgeColor', 'none')
+patch(xBox, yBoxNhi, 'black', 'FaceColor', 'red','FaceAlpha', 0.1,'EdgeColor', 'none')
 legend('Vane Direction','East','South', 'West', 'North')
 
 hold off;
 
 %% PROCESS THERMISTOR DATA
 
-A03prime = double(A03)
+A03prime = double(A03);
 Vthermistor = teensyunit.*A03prime; %% MAKE SURE CORRECT PIN
 %Vthermistor = linspace(0.3,3.3,100); % test vector
 temps = Vthermistor.*-37.1 + 109;
