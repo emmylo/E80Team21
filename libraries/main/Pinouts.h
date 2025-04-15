@@ -42,12 +42,12 @@
 #define PRESSURE_PIN 14 // Teensy pin A00
 
 // Anemometer
-#define ANEMOMETER_PIN 17
+#define ANEMOMETER_PIN 15
 
 // Weather Vane
-#define VANE_PIN 11
+#define VANE_PIN 16
 
 // Thermistor
-#define THERMISTOR_PIN 16
+#define THERMISTOR_PIN 17
 
 #endif
