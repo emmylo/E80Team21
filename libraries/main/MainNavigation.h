@@ -58,7 +58,7 @@ public:
   bool navigateState = 1;
   bool atPoint;
   bool complete = 0;
-  bool navMode = 0; // 0 for GPS, 1 for vane
+  bool navMode = 1; // 0 for GPS, 1 for vane
 
 
   int totalWayPoints;

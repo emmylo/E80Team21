@@ -131,19 +131,20 @@ void loop() {
   /// SURFACE CONTROL FINITE STATE MACHINE///
   if ( currentTime-main_navigation.lastExecutionTime > LOOP_PERIOD ) { //what does this line do?
     main_navigation.lastExecutionTime = currentTime;
-    
-    if (main_navigation.navMode == 0){
+
     if ( main_navigation.navigateState ) { // NAVIGATE STATE //
+
+    if (main_navigation.navMode == 0){
       if ( !main_navigation.atPoint ) { 
         main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
       }
       else if ( main_navigation.complete ) { 
-        delete[] main_navigation.wayPoints; // destroy surface waypoint array from the Heap
-        main_navigation.navMode = 1; //changed
-        main_navigation.atPoint = false; //MAYBE DON'T NEED
+        delete[] main_navigation.wayPoints; // destroy surface waypoint array from the Heap after navigation done
       }
       else {
-        main_navigation.atPoint = false;   // get ready to go to the next point
+        main_navigation.atPoint = false;   // get ready to go to the next point, potential problem could arise if we don't move to the next waypoint
+        main_navigation.navMode = 1; //changed
+
       }
       motor_driver.drive(main_navigation.uL,main_navigation.uR,0); //bring back to 0
     }
@@ -156,12 +157,14 @@ void loop() {
 
       if (currentTime <= windNavigationEnd ){
         main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
-        motor_driver.drive(main_navigation.uL ,main_navigation.uR,10); //make sure 10 is enough
+        motor_driver.drive(main_navigation.uL ,main_navigation.uR,15); //make sure 10 is enough
         
       }
 
       else{
         main_navigation.navMode = 0;
+        main_navigation.atPoint = false; //MAYBE DON'T NEED
+
       }
 
   }

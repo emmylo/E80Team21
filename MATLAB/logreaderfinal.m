@@ -176,3 +176,6 @@ plot(temps)
 xlabel('Sample Number')
 ylabel('Temperature (degrees Celsius)')
 title(['Thermistor'])
+
+%hold on
+%plot(motorC)
