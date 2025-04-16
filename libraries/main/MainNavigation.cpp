@@ -110,6 +110,15 @@ else{
     float uR = avgPower + u;
     float uL = avgPower - u;
 
+    /* heading version 
+    float heading = state->heading;
+    float heading_des = angledeg;
+    float heading_error = heading_des - heading;
+    float u = Kp*heading_error;
+    float uR = avgPower + u;
+    float uL = avgPower - u;
+    */
+
 
 }
 

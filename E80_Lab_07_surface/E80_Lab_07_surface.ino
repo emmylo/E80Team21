@@ -80,6 +80,8 @@ void setup() {
   led.init();
 
   int navigateDelay = 5000; // how long robot will stay at surface waypoint before continuing (ms)
+  int windNavStart;
+  int windNavDuration = 20000; 
 
   const int num_surface_waypoints = 2; // Number of ordered pairs of surface waypoints. (e.g., if surface_waypoints is {x0,y0,x1,y1} then num_surface_waypoints is 2.) Set to 0 if only doing depth control  
   double surface_waypoints [] = {  2, 1, 0, 0};   // listed as x0,y0,x1,y1, ... etc.
@@ -146,6 +148,7 @@ void loop() {
       else {
         main_navigation.atPoint = false;   // get ready to go to the next point, potential problem could arise if we don't move to the next waypoint
         main_navigation.navMode = 1; //changed
+        windNavStart = currentTime;
 
       }
       motor_driver.drive(main_navigation.uL,main_navigation.uR,0); //bring back to 0
@@ -153,22 +156,18 @@ void loop() {
   
 
     else{ 
-      //int windNavigationStart = 20000; //how does the looping work
-      //int windNavigationEnd = windNavigationStart + windNavigationDuration;
 
-
-      //if (currentTime <= windNavigationEnd ){
+      if (currentTime - windNavStart <= windNavDuration ){
         main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
-        motor_driver.drive(20,20,20);
-        //motor_driver.drive(main_navigation.uL ,main_navigation.uR,20); //make sure 10 is enough
+        //motor_driver.drive(20,20,20);
+        motor_driver.drive(main_navigation.uL ,main_navigation.uR,20); //make sure 20 is enough
         
-      //}
+      }
 
-      /*else{
+      else{
         main_navigation.navMode = 0;
-        main_navigation.atPoint = false; //MAYBE DON'T NEED
 
-      }*/
+      }
 
   }
   }
