@@ -58,14 +58,14 @@ if (navMode == 0){
 
     ///////////////////////////////////////////////////////////
     // INSERT P CONTROL CODE HERE
-    float yaw = state->yaw;
+    yaw = state->yaw;
     float x = state->x;
     float y = state->y;
-    float yaw_des = atan2(y_des - y, x_des - x);
-    float yaw_error = yaw_des - yaw;
-    float u = Kp*yaw_error;
-    float uR = avgPower + u;
-    float uL = avgPower - u;
+    yaw_des = atan2(y_des - y, x_des - x);
+    yaw_error = yaw_des - yaw;
+    u = Kp*yaw_error;
+    uR = avgPower + u;
+    uL = avgPower - u;
     ///////////////////////////////////////////////////////////
     
     
@@ -103,12 +103,12 @@ else{
 
     anglerad = 2*3.1415-angle*3.1415/180; //radians
 
-    float yaw = state->yaw;
-    float yaw_des = anglerad;
-    float yaw_error = yaw_des - yaw;
-    float u = Kp*yaw_error;
-    float uR = avgPower + u;
-    float uL = avgPower - u;
+    yaw = state->yaw;
+    yaw_des = anglerad;
+    yaw_error = yaw_des - yaw;
+    u = Kp*yaw_error;
+    uR = avgPower + u;
+    uL = avgPower - u;
 
 
 }

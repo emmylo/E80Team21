@@ -21,7 +21,7 @@ clear
 % Max of ~4000 (Teensy doesn't have enough memory to save more)
 numSamples = 100; % 100 recommended
 % number of times matlab requests additional data from the Teensy
-numAquisitions = 50; % 50 is plenty
+numAquisitions = 25; % 50 is plenty
 % initailize vectors to hold magnetometer data
 mx = zeros(numSamples*numAquisitions,1);
 my = zeros(numSamples*numAquisitions,1);
@@ -33,7 +33,7 @@ disp("Rotate Motherboard into as many orientations as possible");
 %% Initialize Serial Port
 % Modify first argument to match the Teensy port under Tools tab of Arduino IDE
 % same baudrate as Teensy
-s = serial('/dev/tty.usbmodem120885801','BaudRate',115200);
+s = serial('COM10','BaudRate',115200);
 set(s,'InputBufferSize',bytesPerSample*numSamples);
 
 %% Read Data from IMU
