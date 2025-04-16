@@ -129,6 +129,8 @@ void loop() {
   }
 
   /// SURFACE CONTROL FINITE STATE MACHINE///
+
+  
   if ( currentTime-main_navigation.lastExecutionTime > LOOP_PERIOD ) { //what does this line do?
     main_navigation.lastExecutionTime = currentTime;
 
@@ -148,25 +150,27 @@ void loop() {
       }
       motor_driver.drive(main_navigation.uL,main_navigation.uR,0); //bring back to 0
     }
-  }
+  
 
     else{ 
-      int windNavigationStart = 20000; //how does the looping work
-      int windNavigationEnd = windNavigationStart + windNavigationDuration;
+      //int windNavigationStart = 20000; //how does the looping work
+      //int windNavigationEnd = windNavigationStart + windNavigationDuration;
 
 
-      if (currentTime <= windNavigationEnd ){
+      //if (currentTime <= windNavigationEnd ){
         main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
-        motor_driver.drive(main_navigation.uL ,main_navigation.uR,15); //make sure 10 is enough
+        motor_driver.drive(20,20,20);
+        //motor_driver.drive(main_navigation.uL ,main_navigation.uR,20); //make sure 10 is enough
         
-      }
+      //}
 
-      else{
+      /*else{
         main_navigation.navMode = 0;
         main_navigation.atPoint = false; //MAYBE DON'T NEED
 
-      }
+      }*/
 
+  }
   }
   }
 
