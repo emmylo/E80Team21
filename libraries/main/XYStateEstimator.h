@@ -40,9 +40,15 @@ public:
   int lastExecutionTime = -1;
 
 private:
+<<<<<<< HEAD
   // set coordinates of chosen origin below
   const float origin_lat = 34.1063728;
   const float origin_lon = -117.7124329;
+=======
+  // set coordinates of chosen origin below NEED TO CHANGE FOR pHake Lake 
+  const float origin_lat = 34.106465;
+  const float origin_lon = -117.712488;
+>>>>>>> 2efc242103fe6974a0cf576fea24e6fab689fd3c
 
   bool gpsAcquired;
 
