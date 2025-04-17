@@ -101,7 +101,7 @@ else{
     
     angledeg = 360 - angle*360; // degrees
 
-    anglerad = 2*3.1415-angle*3.1415/180; //radians
+    anglerad = angledeg*3.1415/180; //radians
 
     yaw = state->yaw;
     yaw_des = anglerad;
@@ -120,10 +120,10 @@ String MainNavigation::printString(void) {
 
   if(navMode == 0){
   if (!navigateState) {
-    printString += "SurfaceControl: Not in navigate state";
+    printString += "MainNavigation: Not in navigate state";
   }
   else if (!gpsAcquired) {
-    printString += "SurfaceControl: Waiting to acquire more satellites...";
+    printString += "MainNavigation: Waiting to acquire more satellites...";
   }
   else {
     printString += "GPSControl: ";
@@ -166,17 +166,17 @@ else{
 String MainNavigation::printWaypointUpdate(void) {
   String wayPointUpdate = "";
   if (!navigateState) {
-    wayPointUpdate += "SurfaceControl: Not in navigate state";
+    wayPointUpdate += "MainNavigation: Not in navigate state";
   }
   else if (!gpsAcquired) {
-    wayPointUpdate += "SurfaceControl: Waiting to acquire more satellites...";
+    wayPointUpdate += "MainNavigation: Waiting to acquire more satellites...";
   }
   else if (delayed) {
-    wayPointUpdate += "SurfaceControl: Waiting for delay";
+    wayPointUpdate += "MainNavivation: Waiting for delay";
     wayPointUpdate += String(currentWayPoint);
   }
   else {
-    wayPointUpdate += "SurfaceControl: ";
+    wayPointUpdate += "MainNavigation: ";
     wayPointUpdate += "Current Waypoint: ";
     wayPointUpdate += String(currentWayPoint);
     wayPointUpdate += "; Distance from Waypoint: ";

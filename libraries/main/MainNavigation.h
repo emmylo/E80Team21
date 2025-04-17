@@ -58,7 +58,7 @@ public:
   bool navigateState = 1;
   bool atPoint = 0;
   bool complete = 0;
-  bool navMode = 0; // 0 for GPS, 1 for vane
+  bool navMode = 1; // 0 for GPS, 1 for vane
 
 
   int totalWayPoints;
@@ -80,7 +80,7 @@ private:
   bool gpsAcquired;
   
   int navigateDelay;
-  int delayStartTime = 0; //change for delay
+  int delayStartTime = 24000; //change for delay
   int currentTime;
   bool delayed;
 };

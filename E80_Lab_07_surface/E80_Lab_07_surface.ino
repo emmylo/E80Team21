@@ -134,8 +134,8 @@ void loop() {
   
   if ( currentTime-main_navigation.lastExecutionTime > LOOP_PERIOD ) { //what does this line do?
     main_navigation.lastExecutionTime = currentTime;
-    int windNavDuration = 20000;
-    int windNavStart = 1000;
+    int windNavDuration = 30000;
+    int windNavStart = 15000;
 
     if ( main_navigation.navigateState ) { // NAVIGATE STATE //
 
@@ -149,10 +149,12 @@ void loop() {
       else {
         main_navigation.atPoint = false;   // get ready to go to the next point, potential problem could arise if we don't move to the next waypoint
         main_navigation.navMode = 1; //changed
+        delay(5000); // wait until we move to navigation mode 
         windNavStart = currentTime;
 
       }
-      motor_driver.drive(main_navigation.uL,main_navigation.uR,-20); //bring back to 0
+      //motor_driver.drive(-100,100,100);
+      motor_driver.drive(-main_navigation.uL,main_navigation.uR,20); //bring back to 0
     }
   
 
@@ -161,8 +163,8 @@ void loop() {
 
       if (currentTime-windNavStart <= windNavDuration ){
         main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
-        //motor_driver.drive(20,20,20);
-        motor_driver.drive(main_navigation.uL ,main_navigation.uR,-20); //make sure 10 is enough
+        //motor_driver.drive(0,0,0);
+        motor_driver.drive(main_navigation.uL ,main_navigation.uR,0); //make sure 10 is enough
         
       }
 
