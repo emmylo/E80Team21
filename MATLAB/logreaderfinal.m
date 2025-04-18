@@ -4,7 +4,11 @@
 clear;
 %clf;
 
+<<<<<<< HEAD
 filenum = '099'; % file number for the data you want to read
+=======
+filenum = '071'; % file number for the data you want to read
+>>>>>>> 6a983d3ff74b64fa80d54f4158c723280934615a
 infofile = strcat('INF', filenum, '.TXT');
 datafile = strcat('LOG', filenum, '.BIN');
 
@@ -179,3 +183,5 @@ title(['Thermistor'])
 
 %hold on
 %plot(motorC)
+
+plot(x,y)
