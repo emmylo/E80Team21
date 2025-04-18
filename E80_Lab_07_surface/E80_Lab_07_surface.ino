@@ -151,32 +151,24 @@ void loop() {
       else {
         main_navigation.atPoint = false;   // get ready to go to the next point, potential problem could arise if we don't move to the next waypoint
         main_navigation.navMode = 1; //changed
-<<<<<<< HEAD
-        delay(5000); // wait until we move to navigation mode 
-=======
->>>>>>> 2efc242103fe6974a0cf576fea24e6fab689fd3c
+       delay(5000); // wait until we move to navigation mode 
         windNavStart = currentTime;
 
       }
       //motor_driver.drive(-100,100,100);
-      motor_driver.drive(-main_navigation.uL,main_navigation.uR,20); //bring back to 0
+      motor_driver.drive(0,0,0);
+      //motor_driver.drive(-main_navigation.uL,main_navigation.uR,0); //bring back to 0
     }
   
 
     else{ 
 
-<<<<<<< HEAD
 
       if (currentTime-windNavStart <= windNavDuration ){
         main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
-        //motor_driver.drive(0,0,0);
-        motor_driver.drive(main_navigation.uL ,main_navigation.uR,0); //make sure 10 is enough
-=======
-      if (currentTime - windNavStart <= windNavDuration ){
-        main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
-        //motor_driver.drive(20,20,20);
-        motor_driver.drive(main_navigation.uL ,main_navigation.uR,20); //make sure 20 is enough
->>>>>>> 2efc242103fe6974a0cf576fea24e6fab689fd3c
+        motor_driver.drive(0,0,0);
+        //motor_driver.drive(main_navigation.uL ,main_navigation.uR,0); //make sure 10 is enough
+
         
       }
 
