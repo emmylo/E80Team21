@@ -4,11 +4,7 @@
 clear;
 %clf;
 
-<<<<<<< HEAD
-filenum = '099'; % file number for the data you want to read
-=======
-filenum = '071'; % file number for the data you want to read
->>>>>>> 6a983d3ff74b64fa80d54f4158c723280934615a
+filenum = '098'; % file number for the data you want to read
 infofile = strcat('INF', filenum, '.TXT');
 datafile = strcat('LOG', filenum, '.BIN');
 
@@ -66,10 +62,10 @@ rps = zeros(1,length(samples));
 
 % keeping track of what came before and what we're on now
 prev = 100;
-curr = A01(1);
+curr = A01prime(1);
 revs = 0;
 totalRevs = 0;
-sampleTime = 700:800;
+sampleTime = 0:length(A01prime);
 
 for i = 1:length(samples)-1
     for j = samples(i):samples(i+1)
@@ -85,10 +81,10 @@ for i = 1:length(samples)-1
     revs = 0;
 end
 
-% awesome function that turns somethings like [1 2 3] into [ 1 1 2 2 3 3]
+% function that turns something like [1 2 3] into [ 1 1 2 2 3 3]
 smoothrps = repelem(rps, period);
 averagerps = totalRevs/length(sampleTime)*10;
-windspeed = rps*10.1-5.14;
+windspeed = rps*6.76+0.235;
 figure(1)
 plot(windspeed)
 xlabel('Sample Number')
