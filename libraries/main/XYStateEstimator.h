@@ -41,8 +41,8 @@ public:
 
 private:
   // set coordinates of chosen origin below
-  const float origin_lat = 34.1063728;
-  const float origin_lon = -117.7124329;
+  const float origin_lat = 34.1044350;
+  const float origin_lon = -117.7087860;
 
   bool gpsAcquired;
 

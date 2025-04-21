@@ -62,7 +62,7 @@ if (navMode == 0){
     float x = state->x;
     float y = state->y;
     yaw_des = atan2(y_des - y, x_des - x);
-    yaw_error = yaw_des - yaw;
+    yaw_error = angleDiff(yaw_des - yaw);
     u = Kp*yaw_error;
     uR = avgPower + u;
     uL = avgPower - u;
@@ -105,7 +105,7 @@ else{
 
     yaw = state->yaw;
     yaw_des = anglerad;
-    yaw_error = yaw_des - yaw;
+    yaw_error = angleDiff(yaw_des - yaw);
     u = Kp*yaw_error;
     uR = avgPower + u;
     uL = avgPower - u;

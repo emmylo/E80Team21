@@ -85,7 +85,7 @@ void setup() {
 
 
   const int num_surface_waypoints = 2; // Number of ordered pairs of surface waypoints. (e.g., if surface_waypoints is {x0,y0,x1,y1} then num_surface_waypoints is 2.) Set to 0 if only doing depth control  
-  double surface_waypoints [] = {  2, 0, 0, 0};   // listed as x0,y0,x1,y1, ... etc.
+  double surface_waypoints [] = {  10, 10, 0, 0};   // listed as x0,y0,x1,y1, ... etc.
   //surface_control.init(num_surface_waypoints, surface_waypoints, navigateDelay); //CHANGE
   main_navigation.init(num_surface_waypoints, surface_waypoints, navigateDelay); //CHANGE
 
@@ -136,7 +136,7 @@ void loop() {
   
   if ( currentTime-main_navigation.lastExecutionTime > LOOP_PERIOD ) { //what does this line do?
     main_navigation.lastExecutionTime = currentTime;
-    int windNavDuration = 30000;
+    int windNavDuration = 40000;
     int windNavStart = 15000;
 
     if ( main_navigation.navigateState ) { // NAVIGATE STATE //
@@ -155,9 +155,9 @@ void loop() {
         windNavStart = currentTime;
 
       }
-      //motor_driver.drive(-100,100,100);
-      motor_driver.drive(0,0,0);
-      //motor_driver.drive(-main_navigation.uL,main_navigation.uR,0); //bring back to 0
+      //motor_driver.drive(100,100,100);
+      //motor_driver.drive(0,0,0);
+      motor_driver.drive(main_navigation.uL,main_navigation.uR,0); //bring back to 0
     }
   
 
@@ -166,8 +166,9 @@ void loop() {
 
       if (currentTime-windNavStart <= windNavDuration ){
         main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
-        motor_driver.drive(0,0,0);
-        //motor_driver.drive(main_navigation.uL ,main_navigation.uR,0); //make sure 10 is enough
+        //motor_driver.drive(0,0,0);
+        //motor_driver.drive(100,100,0);
+        motor_driver.drive(main_navigation.uL ,main_navigation.uR,0); //make sure 10 is enough
 
         
       }
