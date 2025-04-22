@@ -139,7 +139,7 @@ void loop() {
     int windNavDuration = 40000;
     int windNavStart = 15000;
 
-    if ( main_navigation.navigateState ) { // NAVIGATE STATE //
+    //if ( main_navigation.navigateState ) { // NAVIGATE STATE //
 
     if (main_navigation.navMode == 0){
       if ( !main_navigation.atPoint ) { 
@@ -180,7 +180,7 @@ void loop() {
 
   }
   }
-  }
+  //}
 
   
   if ( currentTime-adc.lastExecutionTime > LOOP_PERIOD ) {
