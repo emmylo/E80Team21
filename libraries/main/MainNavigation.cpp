@@ -153,7 +153,7 @@ String MainNavigation::printString(void) {
 }
 
 else{
-    printString += "WindControl: ";
+    printString += "MainNavigation: ";
     printString += "Yaw_Des: ";
     printString += String(yaw_des*180.0/PI);
     printString += "[deg], ";

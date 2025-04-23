@@ -54,6 +54,15 @@ volatile bool EF_States[NUM_FLAGS] = {1,1,1};
 
 int windNavigationDuration = 60000;
 
+  int navigateDelay = 5000; // how long robot will stay at surface waypoint before continuing (ms)
+  int windNavStart;
+  int windNavDuration = 20000; 
+  bool paused = false;
+  int pauseLength = 2000;
+  int pauseInterval = 10000;
+  int pauseStart = 0;
+  int pauseEnd = 0;
+
 
 ////////////////////////* Setup *////////////////////////////////
 
@@ -79,9 +88,7 @@ void setup() {
   motor_driver.init();
   led.init();
 
-  int navigateDelay = 5000; // how long robot will stay at surface waypoint before continuing (ms)
-  int windNavStart;
-  int windNavDuration = 20000; 
+
 
 
   const int num_surface_waypoints = 2; // Number of ordered pairs of surface waypoints. (e.g., if surface_waypoints is {x0,y0,x1,y1} then num_surface_waypoints is 2.) Set to 0 if only doing depth control  
@@ -133,7 +140,7 @@ void loop() {
 
   /// SURFACE CONTROL FINITE STATE MACHINE///
 
-  
+  // I need to use delay to prevent the motors from interfering with the data collection. If I use delay, will the Teensy still record what is on the pins? 
   if ( currentTime-main_navigation.lastExecutionTime > LOOP_PERIOD ) { //what does this line do?
     main_navigation.lastExecutionTime = currentTime;
     int windNavDuration = 40000;
@@ -151,7 +158,7 @@ void loop() {
       else {
         main_navigation.atPoint = false;   // get ready to go to the next point, potential problem could arise if we don't move to the next waypoint
         main_navigation.navMode = 1; //changed
-       delay(5000); // wait until we move to navigation mode 
+        delay(5000); // wait until we move to navigation mode 
         windNavStart = currentTime;
 
       }
@@ -162,25 +169,33 @@ void loop() {
   
 
     else{ 
+      //if (currentTime-windNavStart <= windNavDuration ){
+        if(!paused && (currentTime - pauseEnd >= pauseInterval)){
+          paused = true;
+          motor_driver.drive(0,0,0);
+          pauseStart = currentTime;
+        }
+
+        else if(paused && (currentTime-pauseStart >= pauseLength)){
+          paused = false;
+          pauseEnd = currentTime;
+          //motor_driver.drive(40,40,0);
+          main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
+          motor_driver.drive(main_navigation.uL ,main_navigation.uR,0); //make sure 10 is enough
 
 
-      if (currentTime-windNavStart <= windNavDuration ){
-        main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
-        //motor_driver.drive(0,0,0);
-        //motor_driver.drive(100,100,0);
-        motor_driver.drive(main_navigation.uL ,main_navigation.uR,0); //make sure 10 is enough
-
+        }
         
-      }
+      //}
 
-      else{
-        main_navigation.navMode = 0;
+      //else{
+       // main_navigation.navMode = 0;
 
-      }
+      //}
 
-  }
   }
   //}
+  }
 
   
   if ( currentTime-adc.lastExecutionTime > LOOP_PERIOD ) {
