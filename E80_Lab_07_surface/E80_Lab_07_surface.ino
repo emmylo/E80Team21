@@ -56,7 +56,7 @@ int windNavigationDuration = 60000;
 
   int navigateDelay = 5000; // how long robot will stay at surface waypoint before continuing (ms)
   int windNavStart;
-  int windNavDuration = 20000; 
+  int windNavDuration = 30000; 
   bool paused = false;
   int pauseLength = 2000;
   int pauseInterval = 10000;
@@ -143,10 +143,9 @@ void loop() {
   // I need to use delay to prevent the motors from interfering with the data collection. If I use delay, will the Teensy still record what is on the pins? 
   if ( currentTime-main_navigation.lastExecutionTime > LOOP_PERIOD ) { //what does this line do?
     main_navigation.lastExecutionTime = currentTime;
-    int windNavDuration = 40000;
-    int windNavStart = 15000;
+ 
 
-    //if ( main_navigation.navigateState ) { // NAVIGATE STATE //
+    if ( main_navigation.navigateState ) { // NAVIGATE STATE //
 
     if (main_navigation.navMode == 0){
       if ( !main_navigation.atPoint ) { 
@@ -158,7 +157,7 @@ void loop() {
       else {
         main_navigation.atPoint = false;   // get ready to go to the next point, potential problem could arise if we don't move to the next waypoint
         main_navigation.navMode = 1; //changed
-        delay(5000); // wait until we move to navigation mode 
+        delay(7000); // wait until we move to navigation mode 
         windNavStart = currentTime;
 
       }
@@ -169,7 +168,7 @@ void loop() {
   
 
     else{ 
-      //if (currentTime-windNavStart <= windNavDuration ){
+      if (currentTime-windNavStart <= windNavDuration ){
         if(!paused && (currentTime - pauseEnd >= pauseInterval)){
           paused = true;
           motor_driver.drive(0,0,0);
@@ -186,15 +185,15 @@ void loop() {
 
         }
         
-      //}
+      }
 
-      //else{
-       // main_navigation.navMode = 0;
+    else{
+        main_navigation.navMode = 0;
 
-      //}
+      }
 
   }
-  //}
+  }
   }
 
   
