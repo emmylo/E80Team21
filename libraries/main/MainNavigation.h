@@ -55,8 +55,8 @@ public:
   float Vdivider; //back out to get Vout from voltage divider
   float R1; // back out to get resistance 
 
-  bool navigateState = 1; // did i change this?
-  bool atPoint = 0;
+  bool navigateState = 1; 
+  bool atPoint;
   bool complete = 0;
   bool navMode = 0; // 0 for GPS, 1 for vane
 
