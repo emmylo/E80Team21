@@ -100,7 +100,7 @@ else{
         angle = R1/1000;
     }
     
-    angledeg = 360-angle*360; // degrees
+    angledeg = angle*360; // degrees
 
     anglerad = angledeg*3.1415/180; //radians
 

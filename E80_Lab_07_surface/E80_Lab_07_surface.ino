@@ -162,7 +162,7 @@ void loop() {
       }
       //motor_driver.drive(100,100,100);
       //motor_driver.drive(0,0,0);
-      motor_driver.drive(main_navigation.uL,main_navigation.uR,0); //bring back to 0
+      motor_driver.drive(main_navigation.uL,main_navigation.uR,40); //bring back to 0
     }
   
 
