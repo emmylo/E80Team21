@@ -56,7 +56,7 @@ int windNavigationDuration = 60000;
 
   int navigateDelay = 5000; // how long robot will stay at surface waypoint before continuing (ms)
   int windNavStart;
-  int windNavDuration = 30000; 
+  int windNavDuration = 15000; 
   bool paused = false;
   int pauseLength = 2000;
   int pauseInterval = 10000;
@@ -92,7 +92,7 @@ void setup() {
 
 
   const int num_surface_waypoints = 2; // Number of ordered pairs of surface waypoints. (e.g., if surface_waypoints is {x0,y0,x1,y1} then num_surface_waypoints is 2.) Set to 0 if only doing depth control  
-  double surface_waypoints [] = {  10, 10, 0, 0};   // listed as x0,y0,x1,y1, ... etc.
+  double surface_waypoints [] = {  -5, 7, -5, 7};   // listed as x0,y0,x1,y1, ... etc.
   //surface_control.init(num_surface_waypoints, surface_waypoints, navigateDelay); //CHANGE
   main_navigation.init(num_surface_waypoints, surface_waypoints, navigateDelay); //CHANGE
 
@@ -140,16 +140,15 @@ void loop() {
 
   /// SURFACE CONTROL FINITE STATE MACHINE///
 
-  // I need to use delay to prevent the motors from interfering with the data collection. If I use delay, will the Teensy still record what is on the pins? 
-  if ( currentTime-main_navigation.lastExecutionTime > LOOP_PERIOD ) { //what does this line do?
+  if ( currentTime-main_navigation.lastExecutionTime > LOOP_PERIOD ) { 
     main_navigation.lastExecutionTime = currentTime;
- 
 
-    if ( main_navigation.navigateState ) { // NAVIGATE STATE //
+    //if ( main_navigation.navigateState ) { // NAVIGATE STATE //
 
     if (main_navigation.navMode == 0){
+
       if ( !main_navigation.atPoint ) { 
-        main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
+        main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime, adc.sample[3]);
       }
       else if ( main_navigation.complete ) { 
         delete[] main_navigation.wayPoints; // destroy surface waypoint array from the Heap after navigation done
@@ -167,36 +166,35 @@ void loop() {
     }
   
 
-    else{ 
-      if (currentTime-windNavStart <= windNavDuration ){
+    else{ // when navMode == 1
+      //if (currentTime-windNavStart <= windNavDuration ){
         if(!paused && (currentTime - pauseEnd >= pauseInterval)){
           paused = true;
-          motor_driver.drive(0,0,0);
           pauseStart = currentTime;
         }
 
         else if(paused && (currentTime-pauseStart >= pauseLength)){
           paused = false;
           pauseEnd = currentTime;
-          //motor_driver.drive(40,40,0);
-          main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime);
-          motor_driver.drive(main_navigation.uL ,main_navigation.uR,0); //make sure 10 is enough
+        } 
 
-
+        if(paused){
+          motor_driver.drive(0,0,0);
         }
-        
-      }
+        else{
+          //motor_driver.drive(40,40,0);
+          main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime,adc.sample[3]);
+          motor_driver.drive(main_navigation.uL ,main_navigation.uR,40); //make sure 10 is enough          
+        }
+      //}
+    //else{
+      //  main_navigation.navMode = 0;
 
-    else{
-        main_navigation.navMode = 0;
-
-      }
-
+      //}
+  //}
   }
   }
-  }
 
-  
   if ( currentTime-adc.lastExecutionTime > LOOP_PERIOD ) {
     adc.lastExecutionTime = currentTime;
     adc.updateSample(); 

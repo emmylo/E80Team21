@@ -30,7 +30,7 @@ int MainNavigation::getWayPoint(int dim) {
   return wayPoints[currentWayPoint*stateDims+dim];
 }
 
-void MainNavigation::navigate(xy_state_t * state, gps_state_t * gps_state_p, int currentTime_in) {
+void MainNavigation::navigate(xy_state_t * state, gps_state_t * gps_state_p, int currentTime_in, int rawTeensy) {
 
 if (navMode == 0){
   currentTime = currentTime_in;
@@ -76,8 +76,9 @@ if (navMode == 0){
 }
 else{
   currentTime = currentTime_in;
+
+  Vteensy = 0.003237 * rawTeensy;
   
-  TeensyToVoltage();
   Vdivider = -Rn1/Rf*(Vteensy - (1+Rf/Rn1)* (Rg/(Rp1+Rg)*Vin)); //back out to get Vout from voltage divider
   R1 = R2*(Vin/Vdivider - 1); // back out to get resistance 
 
@@ -99,7 +100,7 @@ else{
         angle = R1/1000;
     }
     
-    angledeg = 360 - angle*360; // degrees
+    angledeg = 360-angle*360; // degrees
 
     anglerad = angledeg*3.1415/180; //radians
 
@@ -136,6 +137,8 @@ String MainNavigation::printString(void) {
   }
   else {
     printString += "GPSControl: ";
+    printString += " NavMode: ";
+    printString += String(navMode);
     printString += "Yaw_Des: ";
     printString += String(yaw_des*180.0/PI);
     printString += "[deg], ";
@@ -153,7 +156,9 @@ String MainNavigation::printString(void) {
 }
 
 else{
-    printString += "MainNavigation: ";
+    printString += "WindControl: ";
+    printString += " NavMode: ";
+    printString += String(navMode);
     printString += "Yaw_Des: ";
     printString += String(yaw_des*180.0/PI);
     printString += "[deg], ";

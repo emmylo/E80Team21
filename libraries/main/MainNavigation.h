@@ -18,7 +18,7 @@ public:
   void init(const int totalWayPoints_in, double * wayPoints_in, int navigateDelay_in);
 
   // sets the right and left motor efforts using P-Control
-  void navigate(xy_state_t * state, gps_state_t * gps_state_p, int currentTime_in);
+  void navigate(xy_state_t * state, gps_state_t * gps_state_p, int currentTime_in, int rawTeensy);
 
   String printString(void);
 
@@ -58,7 +58,7 @@ public:
   bool navigateState = 1; 
   bool atPoint;
   bool complete = 0;
-  bool navMode = 0; // 0 for GPS, 1 for vane
+  bool navMode = 1; // 0 for GPS, 1 for vane
 
 
   int totalWayPoints;
@@ -71,9 +71,6 @@ private:
 
   int getWayPoint(int dim);
 
-  void TeensyToVoltage(){
-    Vteensy = 0.003237 * analogRead(VANE_PIN);
-  }
 
   const int stateDims = 2;  // Number of dimensions in the state vector (x,y)
   int currentWayPoint = 0;
