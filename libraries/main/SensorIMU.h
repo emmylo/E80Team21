@@ -60,13 +60,13 @@ private:
   float accel_offsets[3]      = { 1.0F, 1.0F, 1.0F };
 
   // Offsets applied to raw x/y/z mag values
-  float mag_offsets[3]        = { -5.3068, -25.8387, 41.1167};
+  float mag_offsets[3]        = {-22.9675, -16.4454,17.2303};//{ -5.3068, -25.8387, 41.1167};
 
   
   // Soft iron error compensation matrix
-  float mag_ironcomp[3][3] =  { { 0.0193, 0.0002, -0.0026 },
-                                { 0,    0.0195,    -0.0010 },
-                                {  0.00,     0.00,    0.0151 } };
+  float mag_ironcomp[3][3] = {{0.0215,0.0014,0.0005},{0,0.0233,0},{0,0,0.0242}}; //{ { 0.0193, 0.0002, -0.0026 },
+                                //{ 0,    0.0195,    -0.0010 },
+                                //{  0.00,     0.00,    0.0151 } };
                               
   
 

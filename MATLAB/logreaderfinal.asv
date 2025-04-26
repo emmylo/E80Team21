@@ -4,7 +4,7 @@
 clear;
 %clf;
 
-filenum = '07'; % file number for the data you want to read
+filenum = '221'; % file number for the data you want to read
 infofile = strcat('INF', filenum, '.TXT');
 datafile = strcat('LOG', filenum, '.BIN');
 
@@ -48,6 +48,8 @@ end
 fclose(fid);
 
 
+%% SAMPLE NUMBER TO TIME
+t = 0.099*0:length(A01);
 
 %% PROCESS ANEMOMETER DATA
 
@@ -135,9 +137,9 @@ angledeg = angle*360; % degrees
 anglerad = angle*pi()/180; % radians
 
 figure(2)
-plot(angledeg)
+plot(angledeg(4300:4300+))
 hold on
-plot(headingIMU)
+plot(headingIMU(1900:1900+600))
 hold off
 xlabel('Sample Number')
 ylabel('Angle (degrees)')

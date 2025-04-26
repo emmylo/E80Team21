@@ -21,6 +21,11 @@ void XYStateEstimator::init(void) {
 
 void XYStateEstimator::updateState(imu_state_t * imu_state_p, gps_state_t * gps_state_p) {
   if (gps_state_p->num_sat >= N_SATS_THRESHOLD){
+    if(!hasOriginSet){
+      origin_lat = gps_state_p->lat;
+      origin_lon = gps_state_p->lon;
+      hasOriginSet = true;
+    }
     gpsAcquired = 1;
 
     float cosOrigLat = cos(origin_lat*PI/180.0);

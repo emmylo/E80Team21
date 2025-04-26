@@ -1,7 +1,7 @@
 #ifndef __MAINNAVIGATION_H__
 #define __MAINNAVIGATION_H__
 
-#define SUCCESS_RADIUS 2.0 // success radius in meters
+#define SUCCESS_RADIUS 3.0 // success radius in meters
 
 #include <Arduino.h>
 #include "MotorDriver.h"

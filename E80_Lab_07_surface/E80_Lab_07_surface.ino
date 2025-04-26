@@ -56,9 +56,9 @@ volatile bool EF_States[NUM_FLAGS] = {1,1,1};
 int windNavigationDuration = 60000;
 int navigateDelay = 5000; // how long robot will stay at surface waypoint before continuing (ms)
 int windNavDuration = 15000; 
-int pauseLength = 2000;
+int pauseLength = 1000;
 int pauseInterval = 10000;
-int frontMotorSpeed = 88;
+int frontMotorSpeed = 170;
 
 // Don't need to change
 int pauseStart = 0;
@@ -97,7 +97,7 @@ void setup() {
 
 
   const int num_surface_waypoints = 2; // Number of ordered pairs of surface waypoints. (e.g., if surface_waypoints is {x0,y0,x1,y1} then num_surface_waypoints is 2.) Set to 0 if only doing depth control  
-  double surface_waypoints [] = {  -5, 7, -5, 7};   // listed as x0,y0,x1,y1, ... etc.
+  double surface_waypoints [] = {  3,-1, 0, 0};   // listed as x0,y0,x1,y1, ... etc.
   //surface_control.init(num_surface_waypoints, surface_waypoints, navigateDelay); //CHANGE
   main_navigation.init(num_surface_waypoints, surface_waypoints, navigateDelay); //CHANGE
 
@@ -157,6 +157,7 @@ void loop() {
       }
       else if ( main_navigation.complete ) { 
         delete[] main_navigation.wayPoints; // destroy surface waypoint array from the Heap after navigation done
+        motor_driver.drive(0,0,0);
       }
       else {
         main_navigation.atPoint = false;   // get ready to go to the next point, potential problem could arise if we don't move to the next waypoint
@@ -165,13 +166,13 @@ void loop() {
 
       }
       //motor_driver.drive(100,100,100);
-      //motor_driver.drive(0,0,0);
+      //motor_driver.drive(200,200,0);
       motor_driver.drive(main_navigation.uL,main_navigation.uR, frontMotorSpeed); //bring back to 0
     }
   
 
     else{ // when navMode == 1
-      if (currentTime-windNavStart <= windNavDuration ){
+      //if (currentTime-windNavStart <= windNavDuration ){
         if(!paused && (currentTime - pauseEnd >= pauseInterval)){
           paused = true;
           pauseStart = currentTime;
@@ -186,17 +187,17 @@ void loop() {
           motor_driver.drive(0,0,0);
         }
         else{
-          //motor_driver.drive(40,40,0);
+          //motor_driver.drive(200,200,0);
           main_navigation.navigate(&xy_state_estimator.state, &gps.state, currentTime,adc.sample[3]);
           motor_driver.drive(main_navigation.uL ,main_navigation.uR, frontMotorSpeed); //make sure 10 is enough          
         }
       }
-    else{
-        main_navigation.navMode = 0;
+      //else{
+        //main_navigation.navMode = 0;
 
-      }
+      //}
   }
-  }
+  //}
   }
 
   if ( currentTime-adc.lastExecutionTime > LOOP_PERIOD ) {
@@ -259,4 +260,3 @@ void EFB_Detected(void){
 void EFC_Detected(void){
   EF_States[2] = 0;
 }
-  
