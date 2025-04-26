@@ -4,7 +4,7 @@
 clear;
 %clf;
 
-filenum = '098'; % file number for the data you want to read
+filenum = '194'; % file number for the data you want to read
 infofile = strcat('INF', filenum, '.TXT');
 datafile = strcat('LOG', filenum, '.BIN');
 
@@ -136,6 +136,9 @@ anglerad = angle*pi()/180; % radians
 
 figure(2)
 plot(angledeg)
+hold on
+plot(yaw*pi/180)
+hold off
 xlabel('Sample Number')
 ylabel('Angle (degrees)')
 title('Weather Vane')
@@ -180,4 +183,3 @@ title(['Thermistor'])
 %hold on
 %plot(motorC)
 
-plot(x,y)

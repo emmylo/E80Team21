@@ -20,7 +20,7 @@ void XYStateEstimator::init(void) {
 }
 
 void XYStateEstimator::updateState(imu_state_t * imu_state_p, gps_state_t * gps_state_p) {
-  //if (gps_state_p->num_sat >= N_SATS_THRESHOLD){
+  if (gps_state_p->num_sat >= N_SATS_THRESHOLD){
     gpsAcquired = 1;
 
     float cosOrigLat = cos(origin_lat*PI/180.0);
@@ -46,10 +46,10 @@ void XYStateEstimator::updateState(imu_state_t * imu_state_p, gps_state_t * gps_
     // You can access the current imu heading with imu_state_p->heading
     // Also note that math.h is already included so you have access to trig functions [rad]
 
-  //}
-  //else{
-  //  gpsAcquired = 0;
-  //}
+  }
+  else{
+    gpsAcquired = 0;
+  }
 }
 
 String XYStateEstimator::printState(void) {

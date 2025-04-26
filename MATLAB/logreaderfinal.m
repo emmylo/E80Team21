@@ -4,7 +4,7 @@
 clear;
 %clf;
 
-filenum = '07'; % file number for the data you want to read
+filenum = '194'; % file number for the data you want to read
 infofile = strcat('INF', filenum, '.TXT');
 datafile = strcat('LOG', filenum, '.BIN');
 
@@ -48,6 +48,8 @@ end
 fclose(fid);
 
 
+%% SAMPLE NUMBER TO TIME
+t = 0.099*0:length(A01);
 
 %% PROCESS ANEMOMETER DATA
 
