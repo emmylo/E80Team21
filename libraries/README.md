@@ -57,3 +57,28 @@ updated magnetometer
 beach test
 motor lights on
 39 seconds to 1:30 untouched
+
+234 
+start at 47 seconds
+in water at 
+attached balloon
+
+237
+switched sides at 1:25
+right turn at 3:30ish
+thermometrr 22.3
+
+good!                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+
+238
+before temp 18.6
+24.5
+after temp
+2pm
+15.1c
+
+239 temperature test
+motor C (used to be motor a)
+20.4
+27.4
+water was 18.5

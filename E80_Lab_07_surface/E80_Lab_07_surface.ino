@@ -53,8 +53,8 @@ int currentTime;
 volatile bool EF_States[NUM_FLAGS] = {1,1,1};
 
 // Can adjust!
-int windNavigationDuration = 60000;
-int navigateDelay = 5000; // how long robot will stay at surface waypoint before continuing (ms)
+int windNavigationDuration = 30000;
+int navigateDelay = 10000; // how long robot will stay at surface waypoint before continuing (ms)
 int windNavDuration = 15000; 
 int pauseLength = 1000;
 int pauseInterval = 10000;
@@ -97,7 +97,7 @@ void setup() {
 
 
   const int num_surface_waypoints = 2; // Number of ordered pairs of surface waypoints. (e.g., if surface_waypoints is {x0,y0,x1,y1} then num_surface_waypoints is 2.) Set to 0 if only doing depth control  
-  double surface_waypoints [] = {  3,-1, 0, 0};   // listed as x0,y0,x1,y1, ... etc.
+  double surface_waypoints [] = {  7,-10, 0, 0};   // listed as x0,y0,x1,y1, ... etc.
   //surface_control.init(num_surface_waypoints, surface_waypoints, navigateDelay); //CHANGE
   main_navigation.init(num_surface_waypoints, surface_waypoints, navigateDelay); //CHANGE
 
@@ -196,8 +196,8 @@ void loop() {
         //main_navigation.navMode = 0;
 
       //}
-  }
   //}
+  }
   }
 
   if ( currentTime-adc.lastExecutionTime > LOOP_PERIOD ) {
