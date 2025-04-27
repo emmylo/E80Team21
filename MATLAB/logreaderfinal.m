@@ -58,7 +58,7 @@ low = 10;
 A01prime = double(A01);
 
 % number of seconds to take moving average over (times 10)
-period = 10;
+period = 100;
 samples = 1:period:length(A01prime);
 rps = zeros(1,length(samples));
 
@@ -105,7 +105,7 @@ Rg = 48000;
 Rp1 = 50000;
 R2 = 5000;
 teensyunit = 0.003237; % one teensy unit to volts
-Vteensy = A02prime.*0.003237; % PROBABLY CHANGE THIS PLEASE DON'T FORGET
+Vteensy = A02prime.*0.003237; 
 %Vteensy = linspace(0.3,3.3,100); % test vector
 
 Vdivider = -Rn1/Rf*(Vteensy - (1+Rf/Rn1)*(Rg/(Rp1+Rg)*Vin)); %back out to get Vout from voltage divider
@@ -181,6 +181,8 @@ plot(temps)
 xlabel('Sample Number')
 ylabel('Temperature (degrees Celsius)')
 title(['Thermistor'])
+hold on 
+plot()
 
 %hold on
 %plot(motorC)

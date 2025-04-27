@@ -28,7 +28,7 @@ official beach test
 3,-1
 0,0
 anemometer going
-940
+9:40am compare to weather data
 
 220
 windnav
@@ -67,7 +67,7 @@ attached balloon
 switched sides at 1:25
 right turn at 3:30ish
 thermometer 22.3
-good! use this one for windnav data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+good! use this one for windnav data                                                                                                                                                                                     1:45pm                                                                                                                                                                                                                                                                                                            
 
 238
 second run of windnav
