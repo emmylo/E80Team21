@@ -67,8 +67,7 @@ attached balloon
 switched sides at 1:25
 right turn at 3:30ish
 thermometrr 22.3
-
-good!                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+good! use this one for windnav data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 
 238
 before temp 18.6
