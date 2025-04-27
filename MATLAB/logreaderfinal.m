@@ -136,12 +136,22 @@ angle = R1./1000;
 angledeg = angle*360; % degrees
 anglerad = angle*pi()/180; % radians
 
+
+
+t = (0:length(A01)-1) * 0.099; % t is in seconds
+
+% Weather Vane: Crop from 200s to 600s
+idx_wv = (t >= 200) & (t <= 600);
+t_wv = t(idx_wv);
+angledeg_wv = angledeg(idx_wv);
+headingIMU_wv = abs(headingIMU(idx_wv));
+
 figure(2)
-plot(angledeg)
+plot(t_wv, angledeg_wv)
 hold on
-plot(abs(headingIMU))
+plot(t_wv, headingIMU_wv)
 hold off
-xlabel('Sample Number')
+xlabel('Time (s)')
 ylabel('Angle (degrees)')
 title('Weather Vane')
 
@@ -172,15 +182,22 @@ hold off;
 
 %% PROCESS THERMISTOR DATA
 
+
 A03prime = double(A03);
 Vthermistor = teensyunit.*A03prime; %% MAKE SURE CORRECT PIN
 %Vthermistor = linspace(0.3,3.3,100); % test vector
 temps = Vthermistor.*-37.1 + 109;
+
+% Thermistor: Crop up to 150s
+idx_th = t >= 150;
+t_th = t(idx_th);
+temps_th = temps(idx_th);
+
 figure(3)
-plot(temps)
-xlabel('Sample Number')
+plot(t_th, temps_th)
+xlabel('Time (s)')
 ylabel('Temperature (degrees Celsius)')
-title(['Thermistor'])
+title('Thermistor')
 
 %hold on
 %plot(motorC)
