@@ -188,7 +188,7 @@ Vthermistor = teensyunit.*A03prime; %% MAKE SURE CORRECT PIN
 %Vthermistor = linspace(0.3,3.3,100); % test vector
 temps = Vthermistor.*-37.1 + 109;
 
-% Thermistor: Crop up to 150s
+%Thermistor: Crop up to 150s
 idx_th = t >= 150;
 t_th = t(idx_th);
 temps_th = temps(idx_th);
