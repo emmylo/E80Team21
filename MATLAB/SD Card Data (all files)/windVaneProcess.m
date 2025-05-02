@@ -2,7 +2,7 @@
 % Use this script to read data from your micro SD card
 
 clear;
-%clf;
+clf;
 
 filenum = ['237']; % file number for the data you want to read
 infofile = strcat('INF', filenum, '.TXT');
@@ -49,55 +49,12 @@ fclose(fid);
 
 
 %% SAMPLE NUMBER TO TIME
-t = 0.099*0:length(A01);
-
-%% PROCESS ANEMOMETER DATA
-
-% voltages should be either 0 or around 1023, using 10 to be safe
-low = 10;
-A01prime = double(A01);
-
-% number of seconds to take moving average over (times 10)
-period = 10;
-samples = 1:period:length(A01prime);
-rps = zeros(1,length(samples));
-
-% keeping track of what came before and what we're on now
-prev = 100;
-curr = A01prime(1);
-revs = 0;
-totalRevs = 0;
-sampleTime = 0:length(A01prime);
-
-for i = 1:length(samples)-1
-    for j = samples(i):samples(i+1)
-        curr = A01(j);
-    if(and(prev > low, curr < low))
-        revs = revs + 1;
-    end
-    prev = curr;
-    end
-    totalRevs = revs + totalRevs;
-    rps(i) = revs/period*10;
-
-    revs = 0;
-end
-
-% function that turns something like [1 2 3] into [ 1 1 2 2 3 3]
-smoothrps = repelem(rps, period);
-averagerps = totalRevs/length(sampleTime)*10;
-windspeed = rps*6.76+0.235; % calibration equation from rps to mph
-figure(1)
-plot(windspeed)
-xlabel('Sample Number')
-ylabel('Wind Speed (mph)')
-title('Anemometer')
-
-
+t = 0.099*(0:length(A01));
 
 
 %% PROCESS WIND VANE DATA
 A02prime = double(A02);
+A02prime = lowpass(A02prime,0.2);
 Vin = 5;
 Rf = 11000;
 Rn1 = 6000;
@@ -105,7 +62,7 @@ Rg = 48000;
 Rp1 = 50000;
 R2 = 5000;
 teensyunit = 0.003237; % one teensy unit to volts
-Vteensy = A02prime.*0.003237; % PROBABLY CHANGE THIS PLEASE DON'T FORGET
+Vteensy = A02prime.*0.003237; 
 %Vteensy = linspace(0.3,3.3,100); % test vector
 
 Vdivider = -Rn1/Rf*(Vteensy - (1+Rf/Rn1)*(Rg/(Rp1+Rg)*Vin)); %back out to get Vout from voltage divider
@@ -134,32 +91,36 @@ end
 
 angle = R1./1000;
 angledeg = angle*360; % degrees
-anglerad = angle*pi()/180; % radians
+anglerad = angledeg*pi()/180; % radians
+
+% bring the 360 jumps to 0 
+angledeg(angledeg > 315) = angledeg(angledeg > 315) -315;
+
+figure(1902)
+plot(angledeg)
 
 
 
-t = (0:length(A01)-1) * 0.099; % t is in seconds
+yawDeg = yaw*180/pi;
+headingIMUCut = headingIMU;
+%headingIMUFiltered = lowpass(headingIMUCut,0.2);
+%headingIMU = headingIMUFiltered;
+%plot(headingIMUCut(3900:5200));
+%%plot(headingIMUFiltered)
+%plot(yawDeg(2000:8000))
+plot(headingIMU+angledeg+70);
 
-% Weather Vane: Crop from 200s to 600s
-idx_wv = (t >= 200) & (t <= 600);
-t_wv = t(idx_wv);
-angledeg_wv = angledeg(idx_wv);
-headingIMU_wv = abs(headingIMU(idx_wv));
 
-figure(2)
-plot(t_wv, angledeg_wv)
-hold on
-plot(t_wv, headingIMU_wv)
-hold off
-xlabel('Time (s)')
+xlabel('Sample Number')
 ylabel('Angle (degrees)')
 title('Weather Vane')
+
 
 yl = ylim;
 ylim([0 360]);
 xl = xlim;
 xBox = [xl(1), xl(2), xl(2), xl(1)];
-directions = ['North', 'East', 'South', 'West'];
+directions = ['Forward', 'Right', 'Backward', 'Left'];
 colors = ['y', 'g', 'b'];
 
 lowEdge = 67.5;
@@ -176,28 +137,52 @@ yBoxNlo = [0 0 22.5 22.5];
 yBoxNhi = [337.5 337.5 360 360];
 patch(xBox, yBoxNlo, 'black', 'FaceColor', 'red','FaceAlpha', 0.1,'EdgeColor', 'none')
 patch(xBox, yBoxNhi, 'black', 'FaceColor', 'red','FaceAlpha', 0.1,'EdgeColor', 'none')
-legend('Vane Direction', 'Robot Heading', 'East','South', 'West', 'North')
+legend('Vane Direction', 'Robot Heading', 'Right','Backward', 'Left', 'Forward')
 
 hold off;
 
-%% PROCESS THERMISTOR DATA
 
-% Thermistor: Crop up to 150s
-idx_th = t <= 150;
-t_th = t(idx_th);
-temps_th = temps(idx_th);
 
-A03prime = double(A03);
-Vthermistor = teensyunit.*A03prime; %% MAKE SURE CORRECT PIN
-%Vthermistor = linspace(0.3,3.3,100); % test vector
-temps = Vthermistor.*-37.1 + 109;
+figure(121)
+makeYaw = headingIMU*pi/180;
+makeYaw = -makeYaw+pi/2;
 
-figure(3)
-plot(t_th, temps_th)
-xlabel('Time (s)')
-ylabel('Temperature (degrees Celsius)')
-title('Thermistor')
 
-%hold on
-%plot(motorC)
+
+if makeYaw<-pi
+    makeYaw = makeYaw + 2*pi;
+elseif makeYaw > pi
+    makeYaw = makeYaw - 2*pi;
+end
+
+makeYaw = makeYaw*180/pi;
+
+plot(makeYaw)
+hold on
+%plot(yawDeg-angledeg)
+%deriv = yawDeg(1:end-1)-yawDeg(2:end);
+%%plot(deriv)
+plot(angledeg)
+%headingIMU(headingIMU > -110) = headingIMU(headingIMU > -110) -180;
+hold on
+%plot(headingIMU+360)
+%plot(angledeg)
+
+%figure(11)
+motorB = double(motorB);
+motorA = double(motorA);
+%plot((motorB-motorA)/20)
+
+figure(999)
+plot(headingIMU+angledeg+180);
+title('Heading + Weather Vane + 180')
+
+
+
+figure(939)
+plot(angledeg)
+hold on
+plot(-headingIMU)
+title('yaw_des and yaw')
+
 

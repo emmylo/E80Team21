@@ -4,7 +4,7 @@
 clear;
 %clf;
 
-filenum = ['040']; % file number for the data you want to read
+filenum = ['237']; % file number for the data you want to read
 infofile = strcat('INF', filenum, '.TXT');
 datafile = strcat('LOG', filenum, '.BIN');
 
@@ -136,10 +136,11 @@ angle = R1./1000;
 angledeg = angle*360; % degrees
 anglerad = angle*pi()/180; % radians
 
+
 figure(2)
 plot(angledeg)
 hold on
-%%plot(abs(headingIMU))
+plot(abs(headingIMU))
 hold off
 xlabel('Sample Number')
 ylabel('Angle (degrees)')
