@@ -98,14 +98,13 @@ for i = 1:length(angledeg)
         angledeg(i) = angledeg(i)-360;
     end
 end
-hold on
-plot(angledeg+70+headingIMU);
+
 
 yl = ylim;
 ylim([-22.5 360-22.5]);
 xl = xlim;
 xBox = [xl(1), xl(2), xl(2), xl(1)];
-directions = ['North', 'East', 'South', 'West'];
+directions = ['Forward', 'Right', 'Backward', 'Left'];
 colors = ['r','y', 'g', 'b'];
 
 lowEdge = -22.5;
@@ -119,5 +118,5 @@ for i = 1:4
 end
 
 
-legend('Wind Direction', 'North','East', 'South', 'West')
+%legend('Vane Direction', 'Robot Heading', 'Right','Backward', 'Left', 'Forward')
 

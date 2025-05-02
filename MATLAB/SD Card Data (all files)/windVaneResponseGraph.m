@@ -96,12 +96,13 @@ angledeg = angle*360; % degrees
 anglerad = angledeg*pi()/180; % radians
 
 for i = 1:length(angledeg)
-    if angledeg(i)>315
+    if angledeg(i)>337.5
         angledeg(i) = angledeg(i)-360;
     end
 end
 
 headingIMU = -headingIMU;
+headingIMU = lowpass(headingIMU,0.2);
 
 for j = 1:length(headingIMU)
     if headingIMU(j) < -50
