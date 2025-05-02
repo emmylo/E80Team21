@@ -120,5 +120,53 @@ plot(t,headingIMU)
 
 xlabel('Time (seconds)')
 ylabel('Angle (degrees)')
-legend('Yaw_{des}','Yaw')
+legend('Weather Vane Angle','Robot Heading')
 title('ASV Response to Wind Vane')
+
+% 200 to 250
+figure(1)
+idx1 = (t >= 200) & (t <= 250);
+plot(t(idx1), angledeg(idx1), 'b')
+hold on
+plot(t(idx1), headingIMU(idx1), 'r')
+xlabel('Time (seconds)')
+ylabel('Angle (degrees)')
+legend('Weather Vane Angle', 'Robot Heading')
+title('ASV Response to Wind Vane: Time 200–250')
+grid on
+
+% 280 to 340
+figure(2)
+idx2 = (t >= 280) & (t <= 340);
+plot(t(idx2), angledeg(idx2), 'b')
+hold on
+plot(t(idx2), headingIMU(idx2), 'r')
+xlabel('Time (seconds)')
+ylabel('Angle (degrees)')
+legend('Weather Vane Angle', 'Robot Heading')
+title('ASV Response to Wind Vane: Time 280–340')
+grid on
+
+% 365 to 400
+figure(3)
+idx3 = (t >= 365) & (t <= 400);
+plot(t(idx3), angledeg(idx3), 'b')
+hold on
+plot(t(idx3), headingIMU(idx3), 'r')
+xlabel('Time (seconds)')
+ylabel('Angle (degrees)')
+legend('Weather Vane Angle', 'Robot Heading')
+title('ASV Response to Wind Vane: Time 365–400')
+grid on
+
+% Time 500 to 700
+figure(4)
+idx4 = (t >= 500) & (t <= 700);
+plot(t(idx4), angledeg(idx4), 'b')
+hold on
+plot(t(idx4), headingIMU(idx4), 'r')
+xlabel('Time (seconds)')
+ylabel('Angle (degrees)')
+legend('Weather Vane Angle', 'Robot Heading')
+title('ASV Response to Wind Vane: Time 500–700')
+grid on
