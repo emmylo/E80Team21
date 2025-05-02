@@ -161,12 +161,24 @@ grid on
 
 % Time 500 to 700
 figure(4)
-idx4 = (t >= 500) & (t <= 700);
+idx4 = (t >= 560) & (t <= 700);
 plot(t(idx4), angledeg(idx4), 'b')
 hold on
 plot(t(idx4), headingIMU(idx4), 'r')
 xlabel('Time (seconds)')
 ylabel('Angle (degrees)')
 legend('Weather Vane Angle', 'Robot Heading')
-title('ASV Response to Wind Vane: Time 500–700')
+title('ASV Response to Wind Vane: Time 560–700')
+grid on
+
+% 200 to 250
+figure(5)
+idx1 = (t >= 200);
+plot(t(idx1), angledeg(idx1), 'b')
+hold on
+plot(t(idx1), headingIMU(idx1), 'r')
+xlabel('Time (seconds)')
+ylabel('Angle (degrees)')
+legend('Weather Vane Angle', 'Robot Heading')
+title('ASV Response to Wind Vane Starting From Time 200 (s)')
 grid on
