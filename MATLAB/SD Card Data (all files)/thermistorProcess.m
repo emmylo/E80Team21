@@ -57,20 +57,53 @@ teensyunit = 0.003237;
 A03prime = double(A03);
 Vthermistor = teensyunit.*A03prime; %% MAKE SURE CORRECT PIN
 %Vthermistor = linspace(0.3,3.3,100); % test vector
-temps = Vthermistor.*-37.1 + 109;
+
+% Constants 
+Rf = 1200;     
+Rn1 = 2000;   
+Rg = 520;     
+Rp1 = 660;   
+R2 = 32000;   
+
+% Steinhart-Hart coefficients
+A_sh = 1.27569904*10^(-3);
+B_sh =1.664960935*10^(-4);
+C_sh =2.328803824*10^(-7);
+
+
+%Equation Constants 
+A = (1 + Rf / Rn1) * (Rg / (Rg + Rp1));
+B = Rf / Rn1;
+
+temps = [];
+for i = 1:length(Vthermistor)
+
+
+    R1 = R2 .* ((5 * B) ./ (5 * A - Vthermistor(i)) - 1);
+    lnR = log(R1);
+    T_kelvin = 1 ./ (A_sh + B_sh .* lnR + C_sh .* lnR.^3);
+    temps(i) = T_kelvin - 273.15;
+
+end
+
+
+temps1 = Vthermistor.*-37.1 + 109;
 cutTemps = temps(1500:end-25);
+cutTemps1 = temps1(1500:end-25);
 t = 0.099.*(1:length(cutTemps));
 figure(3)
 plot(t,temps(1500:end-25))
+hold on
+%plot(t,temps1(1500:end-25))
+
 fontsize("scale", 1.4)
 xlabel('Time (seconds)')
 ylabel('Temperature (degrees Celsius)')
 fontsize("default")
 title(['Motor A H-Bridge Temperature (14-Minute Autonomous Run)'])
 hold on 
-annotation("textarrow",[.763 .763],[.80 .88],String="Peak Temperature: 54°C")
+annotation("textarrow",[.763 .763],[.70 .78],String="Peak Temperature: 51°C")
 
 
 %hold on
 %plot(motorC)
-
