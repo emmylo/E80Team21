@@ -83,7 +83,7 @@ for i = 1:length(Vthermistor)
     lnR = log(R1);
     T_kelvin = 1 ./ (A_sh + B_sh .* lnR + C_sh .* lnR.^3);
     temps(i) = T_kelvin - 273.15;
-    
+
 end
 
 
@@ -94,7 +94,7 @@ t = 0.099.*(1:length(cutTemps));
 figure(3)
 plot(t,temps(1500:end-25))
 hold on
-plot(t,temps1(1500:end-25))
+%plot(t,temps1(1500:end-25))
 
 fontsize("scale", 1.4)
 xlabel('Time (seconds)')
@@ -102,7 +102,7 @@ ylabel('Temperature (degrees Celsius)')
 fontsize("default")
 title(['Motor A H-Bridge Temperature (14-Minute Autonomous Run)'])
 hold on 
-annotation("textarrow",[.763 .763],[.80 .88],String="Peak Temperature: 54°C")
+annotation("textarrow",[.763 .763],[.70 .78],String="Peak Temperature: 51°C")
 
 
 %hold on
