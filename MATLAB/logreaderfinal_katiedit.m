@@ -1,4 +1,4 @@
-% logreaderfinal.m
+% logreaderfinal_katiedit.m
 % Use this script to read data from your micro SD card
 
 clear;
@@ -87,8 +87,23 @@ end
 smoothrps = repelem(rps, period);
 averagerps = totalRevs/length(sampleTime)*10;
 windspeed = rps*6.76+0.235; % calibration equation from rps to mph
+
+%moving average for windspeed data
+averagedata = [];
+for i = 1:length(windspeed)
+    if i < (length(windspeed) - 3) && i > 3
+        averagerange = windspeed(i-3:i+3);
+        averagedata(i) = mean(averagerange);
+    elseif i <= 3 || i >= (length(windspeed) - 3)
+        averagedata(i) = windspeed(i);
+    end
+end 
+
+    
 figure(1)
 plot(windspeed)
+hold on 
+plot(averagedata)
 xlabel('Sample Number')
 ylabel('Wind Speed (mph)')
 title('Anemometer')
